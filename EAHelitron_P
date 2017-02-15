@@ -1,0 +1,298 @@
+#!/usr/bin/perl
+#use strict;
+# Write by Hu Kaining 2015-12-12.
+#Version 1.2002
+use warnings;
+use 5.010;
+use Getopt::Long;
+use Pod::Usage;
+use Time::HiRes 'time';
+#use LWP::Simple;
+use Parallel::ForkManager;
+our $MAX_processes=1;
+
+use re 'eval';
+our $opfn="";
+my $verbose;
+our $upstreml=3000;
+#our $seqfilename ='';
+#GetOptions("i=s"=>\$seqfilename,"o=s" => \$opfn,"verbose"=>\$verbose)
+#or die("Error in command line arguments\n perl Searchhelitron -o <outputfile> (inputfile)\n");
+GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"p=i"=>\$MAX_processes)
+or die("Error in command line arguments\nUsage: perl EAHelitron [-o outfileprefix][-u|upstremlength int][-p int |threads number] <inputfile>\n");
+###################sub TRseq##########
+sub TRseq($)
+{
+	my ($pinseq) = @_;
+	#say $pinseq;
+	my $pinseqtr = reverse $pinseq;
+	#say $pinseqtr;
+	 $pinseqtr =~ tr/ACGTacgt/TGCAtgca/;
+	 #say $pinseqtr;
+	 return  $pinseqtr;
+}
+##################TRseq End#############
+
+our $loadingstarttime=time();
+#defined our $seqfilename =<>;
+#say "File: $seqfilename";
+#while(defined ($seqfilename = <>)){
+#chomp ($seqfilename);
+#say "That's $seqfilename is going to analysis. ";
+#}
+
+#open (SEQFILENAME,$_);
+
+say "Start loading genomeic sequence.";
+#if(!open SEQFILENAME,"< $seqfilename"){
+# die "File not Found\n";
+#}
+#if(!open SEQFILENAME,"< $_"){
+# die "File not Found\n";
+#}
+our $Chri=0;
+our @Chrname=();
+our @Chrseq=();
+#@ARGV = qw#''  Not_Find_a_File#;
+#say @ARGV;
+#say $0;
+while(defined(our $seq = <>)){
+#while(our $seq = <SEQFILENAME>){
+	if ($seq =~ m/^.*>/) {
+	$seq=~ m/^.*>(\w+) ?.*/;
+	say $1;
+	 $Chrname[$Chri]= $1;
+	$Chri++;
+	}else{
+		$seq =~ s/\s//;
+	 $Chrseq[$Chri-1] .=$seq;
+			}
+}
+#close SEQFILENAME;
+our $loadingendtime=time();
+say "$Chri Sequences";
+print "Finished loading!\n";
+printf "%g Sec %g Min\n",$loadingendtime-$loadingstarttime,($loadingendtime-$loadingstarttime)/60;
+if ($opfn eq ""){
+$opfn="EAHeli_out";
+say "Output files:$opfn.fas $opfn.gff3";
+}else{
+say "Output files:$opfn.fas $opfn.gff3";
+}
+
+#open OUT ,">>Brapagenome.out.txt";
+#print OUT "@Chrname\n";
+#print OUT "@Chrseq\n"; 
+#close OUT;
+our $starttime=time();
+our $hairpinpattern="cccgccc";
+say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
+say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
+say "Running. Please wait for a minite.";
+#####################################
+#Start main 
+#####################################
+
+open RSUT,">>$opfn.3.txt";
+open FASTARESULT,">>$opfn.u$upstreml.fas";
+open TCRSUT, ">>$opfn.5.txt";
+open TCFARESULT, ">>$opfn.5.fa";
+open OUTGFF, ">>$opfn.gff3";
+print OUTGFF "##gff-version 3\n";
+our $count1=0;
+
+our $pm=Parallel::ForkManager->new($MAX_processes);
+for (our $ni=0;$ni<$Chri;$ni++){
+	$pm->start and next;
+	open RSUTCA,">>cache.$Chrname[$ni].3.txt";
+	open FASTARESULTCA,">>cache.$Chrname[$ni].u$upstreml.fas";
+	open TCRSUTCA, ">>cache.$Chrname[$ni].5.txt";
+	open TCFARESULTCA, ">>cache.$Chrname[$ni].5.fa";
+	open OUTGFFCA, ">>cache.$Chrname[$ni].gff3";
+	say "Deal with $Chrname[$ni].";
+	$count1=0;
+	our $seqall = $Chrseq[$ni];
+################Start deal with plus seqs.################
+
+while ($seqall=~ /$testseq/igc){
+#while ($seqall =~ /$testseq/igc){
+	
+	#say $seqfilename;
+	#say "Chrom:",$AN;
+	 $count1++;
+	our $l3=length ($3);
+	our $l1=length ($1);
+	our $seqpos=pos($seqall)-5;
+	our $seqstarpos=$seqpos-$l1+16;
+	our $ChrID=$Chrname[$ni];
+#	say "$ChrID:$seqstarpos..$seqpos";
+#	say $l3;
+#	say "-----------------------------------------";
+
+	our $HID ="$ChrID"."H$count1";
+	#say $HID;
+	print RSUTCA ">$HID ";
+	print RSUTCA "$ChrID:$seqstarpos..$seqpos $l3 $2 $3 $4\n";
+#	print RSUT $l3," ";
+#	print RSUT $2," ";
+#	print RSUT $3," ";
+#	print RSUT $4,"\n";
+	print RSUTCA $1,"\n";
+#	print RSUT "-----------------------------------------\n";
+	say FASTARESULTCA ">$ChrID"."H$count1.up $ChrID:$seqstarpos..$seqpos";
+	if ($seqpos<$upstreml){
+	our $rightfinalseq = substr($seqall,0,$seqpos);
+	}else{
+	our $rightfinalseq = substr($seqall,$seqpos-$upstreml,$upstreml);
+	}
+	print FASTARESULTCA "$rightfinalseq\n";
+	print OUTGFFCA "$ChrID\tEAhelitron\tCDS\t$seqstarpos\t$seqpos\t.\t+\t.\tName=$HID.3;ID=$HID;Parent=$HID;Type=Helitron;Super_Family=Helitron\n";
+	our $TCi=0;
+	#say our $TCseq='([atgcn]{10}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{15})';
+	our $rfsl=length($rightfinalseq);
+	while($rightfinalseq=~/$TCseq/igc){
+		$TCi++;
+		my $TCL=length($1)-25;
+		my $TCpos=pos($rightfinalseq)-20;
+		my $TCposstar=$TCpos-$TCL+1;
+		my $TCgpos=$seqpos-$rfsl+$TCpos;
+		my $TCgposstar=$seqpos-$rfsl+$TCposstar;
+		print TCRSUTCA ">$HID.5.$TCi $ChrID:$TCgposstar..$TCgpos $2\n";
+		print TCRSUTCA "$1\n";
+		print OUTGFFCA "$ChrID\tEAhelitron\tCDS\t$TCgposstar\t$TCgpos\t.\t+\t.\tName=$HID.5.$TCi;ID=$HID.5.$TCi;Parent=$HID;Type=Helitron;Super_Family=Helitron\n";
+		print TCFARESULTCA ">$HID.5.$TCi $ChrID:$TCgposstar..$seqpos\n";
+		my $FullHseq=substr($rightfinalseq,$TCposstar-1,$upstreml);
+		print TCFARESULTCA "$FullHseq\n"; 
+	
+	}
+	
+}
+
+################ deal with plus seqs End#################
+
+
+
+
+################Start TR-seqs#############################
+	 $seqall = TRseq($seqall);
+	our $count2=0;
+	our $seqalll = length($seqall);
+while ($seqall=~ /$testseq/igc){
+#while ($seqall =~ /$testseq/igc){
+	#say $seqfilename;
+	#say "Chrom:",$AN;
+	$count2++;
+	
+	 
+	#say "No.",$count2;
+	our $l3=length ($3);
+	our $l1=length ($1);
+	our $seqpos=$seqalll-(pos($seqall)-5)+1;
+	our $seqstarpos=$seqpos+$l1-16;
+	our $ChrID=$Chrname[$ni];
+#	say "$ChrID:$seqstarpos..$seqpos";
+#	
+#
+#	say $l3;
+#	
+#
+#	say "-----------------------------------------";
+
+	our $trHID ="tr$ChrID"."H$count2";
+	#say $trHID;
+	print RSUTCA  ">$trHID $ChrID:$seqstarpos..$seqpos $l3 $2 $3 $4\n";
+#	
+#	print RSUT "$ChrID:$seqstarpos..$seqpos, ";
+#	print RSUT $l3," ";
+#	print RSUT $2," ";
+#	print  RSUT $3," ";
+#	print  RSUT $4,"\n";
+	print RSUTCA $1,"\n";
+#	print RSUT "-----------------------------------------\n";
+	say FASTARESULTCA ">tr$ChrID"."H$count2.up $ChrID:$seqstarpos..$seqpos";
+	my $trseqpos = pos($seqall)-5;
+	if($trseqpos<$upstreml){
+	our $rightfinalseq = substr($seqall,0,$trseqpos);
+	}else{
+	our $rightfinalseq = substr($seqall,$trseqpos-$upstreml,$upstreml);
+	}
+	say FASTARESULTCA $rightfinalseq;
+	print OUTGFFCA "$ChrID\tEAhelitron\tCDS\t$seqpos\t$seqstarpos\t.\t-\t.\tName=$trHID.3;ID=$trHID;Parent=$trHID;Type=Helitron;Super_Family=Helitron\n";
+
+	our $TCi=0;
+	#say our $TCseq='([atgcn]{10}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{15})';
+	our $rfsl=length($rightfinalseq);
+					while($rightfinalseq=~/$TCseq/igc){
+		$TCi++;
+		my $TCL=length($1)-25;
+		my $TCpos=pos($rightfinalseq)-20;
+		my $TCposstar=$TCpos-$TCL+1;
+		my $TCgpos=$seqpos+$rfsl-$TCpos;
+		my $TCgposstar=$seqpos+$rfsl-$TCposstar;
+		print TCRSUTCA ">$trHID.5.$TCi $ChrID:$TCgposstar..$TCgpos $2\n";
+		print TCRSUTCA "$1\n";
+		print OUTGFFCA "$ChrID\tEAhelitron\tCDS\t$TCgpos\t$TCgposstar\t.\t-\t.\tName=$trHID.5.$TCi;ID=$trHID.5.$TCi;Parent=$trHID;Type=Helitron;Super_Family=Helitron\n";
+		print TCFARESULTCA ">$trHID.5.$TCi $ChrID:$TCgposstar..$seqpos\n";
+		my $FullHseq=substr($rightfinalseq,$TCposstar-1,$upstreml);
+		print TCFARESULTCA "$FullHseq\n"; 
+	
+					}
+	
+		}	
+################ TR-seqs End#############################
+#	close RUST$ni,">>cache.$Chrname[$ni].3.txt";
+#	close FASTARESULT$ni,">> cache.$Chrname[$ni].u$upstreml.fas";
+#	close TCRSUT$ni, ">>cache.$Chrname[$ni].5.txt";
+#	close TCFARESULT$ni, ">>cache.$Chrname[$ni].5.fa";
+#	close OUTGFF$ni, ">> cache.$Chrname[$ni].gff3";
+	close RSUTCA;
+	close FASTARESULTCA;
+	close TCRSUTCA;
+	close TCFARESULTCA;
+	close OUTGFFCA;
+$pm->finish;	
+}
+
+$pm->wait_all_children;
+###################Write the out_put files#############
+print "Writing to the Fninal output Files.\n";
+
+for (our $ni=0;$ni<$Chri;$ni++){
+	open RSUTCA,"cache.$Chrname[$ni].3.txt";
+	open FASTARESULTCA,"cache.$Chrname[$ni].u$upstreml.fas";
+	open TCRSUTCA, "cache.$Chrname[$ni].5.txt";
+	open TCFARESULTCA, "cache.$Chrname[$ni].5.fa";
+	open OUTGFFCA, "cache.$Chrname[$ni].gff3";	
+	
+print RSUT <RSUTCA>;
+print FASTARESULT <FASTARESULTCA>;
+print TCRSUT <TCRSUTCA>;
+print TCFARESULT <TCFARESULTCA>;
+print OUTGFF <OUTGFFCA>;
+	close RSUTCA;
+	close FASTARESULTCA;
+	close TCRSUTCA;
+	close TCFARESULTCA;
+	close OUTGFFCA;
+	
+unlink "cache.$Chrname[$ni].3.txt";
+unlink "cache.$Chrname[$ni].u$upstreml.fas";
+unlink "cache.$Chrname[$ni].5.txt";
+unlink "cache.$Chrname[$ni].5.fa";
+unlink "cache.$Chrname[$ni].gff3";
+
+}
+##################End Write files#############
+close RSUT; 
+close FASTARESULT;
+close TCRSUT;
+close TCFARESULT;
+close OUTGFF;
+
+######################################
+#End  main
+######################################
+our $endtime=time();
+#say $starttime;
+#say $endtime;
+printf "Done! %g Sec %g Min\n",$endtime-$starttime,($endtime-$starttime)/60;

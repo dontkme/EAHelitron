@@ -1,4 +1,6 @@
-﻿#!/usr/bin/perl
+#!/usr/bin/perl
+# Write by Hu Kaining 2017-2-15.
+# Version 1.2003
 #use strict;
 use warnings;
 use 5.010;

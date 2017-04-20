@@ -6,8 +6,12 @@ EAHelitron is an unix-like progrme you can run it in all Perl5.10+ supported mac
 
 CMD:
 
-perl EAHeliton –o testEAHout –u 20000 teat.fas
+    perl EAHeliton –o testEAHout –u 20000 teat.fas
 
+OR 
+  
+    ./EAHeliton –o testEAHout –u 20000 teat.fas
+   
 -o means output file prefix.
 -u means how long upstream you want to use to search 5’ terminal. Default is 3000.
 
@@ -15,7 +19,8 @@ We also provide EAHelitron_P a Multi-Threading version to speed up the program r
 (Need Perl Parallel::ForkManager . You can install it by command: capn Parallel::ForkManager )
 
 CMD:
-perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
+
+    perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
 
 -p means how many threads you want to use. Suggest not bigger than the sequenced numbers your input fasta format file contained.
 

@@ -17,7 +17,7 @@ our $upstreml=3000;
 #our $seqfilename ='';
 #GetOptions("i=s"=>\$seqfilename,"o=s" => \$opfn,"verbose"=>\$verbose)
 #or die("Error in command line arguments\n perl Searchhelitron -o <outputfile> (inputfile)\n");
-GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=s"=>\$upstreml)
+GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml)
 or die("Error in command line arguments\nUsage: perl EAHelitron [-o outfileprefix][-u|upstremlength int] <inputfile>\n");
 ###################sub TRseq##########
 sub TRseq($)

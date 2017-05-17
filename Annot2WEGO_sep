@@ -2,7 +2,7 @@
 
 #AUTHORS
 # Kaining Hu (c) 2017
-# Trans blast2go annot file to WEGO native fomat v1.0000 2017/04/27
+# Trans blast2go annot file to WEGO native fomat v1.0001 2017/04/27
 # hukaining@gmail.com
 #
 use strict;
@@ -34,7 +34,7 @@ our $gene="gene";
 while(defined(our $seq = <>)){
 	#chomp $seq;
 	#print $seq;
-	while ($seq =~ /^(.+)\t(GO.+)\n$/ig){
+	while ($seq =~ /^(.+)\t(GO\:\d{7})[\t|\n].*$/g){
 	#say $gene;
 	#say $1;
 	#say $2;

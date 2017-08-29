@@ -1,7 +1,11 @@
 #!/usr/bin/perl
-# Write by Hu Kaining 2017-2-15.
-# Version 1.2003
-#use strict;
+
+#AUTHORS
+# Kaining Hu (c) 2017
+# Easy to Annotate Helitrons command line (EAHelitron)v1.3000 2017/08/29
+# hukaining@gmail.com
+
+use strict;
 use warnings;
 use 5.010;
 use Getopt::Long;
@@ -14,11 +18,12 @@ use re 'eval';
 our $opfn="";
 my $verbose;
 our $upstreml=3000;
+our $downstreml=500;
 #our $seqfilename ='';
 #GetOptions("i=s"=>\$seqfilename,"o=s" => \$opfn,"verbose"=>\$verbose)
 #or die("Error in command line arguments\n perl Searchhelitron -o <outputfile> (inputfile)\n");
-GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml)
-or die("Error in command line arguments\nUsage: perl EAHelitron [-o outfileprefix][-u|upstremlength int] <inputfile>\n");
+GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"d=i"=>\$downstreml)
+or die("Error in command line arguments\nUsage: perl EAHelitron [-o outfileprefix][-u|upstremlength int][-d|downstremlength int] <inputfile>\n");
 ###################sub TRseq##########
 sub TRseq($)
 {
@@ -33,16 +38,8 @@ sub TRseq($)
 ##################TRseq End#############
 
 our $loadingstarttime=time();
-#defined our $seqfilename =<>;
-#say "File: $seqfilename";
-#while(defined ($seqfilename = <>)){
-#chomp ($seqfilename);
-#say "That's $seqfilename is going to analysis. ";
-#}
 
-#open (SEQFILENAME,$_);
-
-say "Start loading genomeic sequence.";
+print "Start loading genomeic sequence.\n";
 #if(!open SEQFILENAME,"< $seqfilename"){
 # die "File not Found\n";
 #}
@@ -59,7 +56,7 @@ while(defined(our $seq = <>)){
 #while(our $seq = <SEQFILENAME>){
 	if ($seq =~ m/^.*>/) {
 	$seq=~ m/^.*>([a-zA-Z0-9_.-]+) ?.*/;
-	say $1;
+	print "$1\n";
 	 $Chrname[$Chri]= $1;
 	$Chri++;
 	}else{
@@ -69,34 +66,32 @@ while(defined(our $seq = <>)){
 }
 #close SEQFILENAME;
 our $loadingendtime=time();
-say "$Chri Sequences";
+print "$Chri Sequences\n";
 print "Finished loading!\n";
 printf "%g Sec %g Min\n",$loadingendtime-$loadingstarttime,($loadingendtime-$loadingstarttime)/60;
 if ($opfn eq ""){
 $opfn="EAHeli_out";
-say "Output files:$opfn.fas $opfn.gff3";
+print "Output files:$opfn.fas $opfn.gff3\n";
 }else{
-say "Output files:$opfn.fas $opfn.gff3";
+print "Output files:$opfn.fas $opfn.gff3\n";
 }
 
-#open OUT ,">>Brapagenome.out.txt";
-#print OUT "@Chrname\n";
-#print OUT "@Chrseq\n"; 
-#close OUT;
+
 our $starttime=time();
 our $hairpinpattern="cccgccc";
 say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
 say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
-say "Running. Please wait for a minite.";
+print "Running. Please wait for a minite.\n";
 #####################################
 #Start main 
 #####################################
-open RSUT,">> $opfn.3.txt";
-open FASTARESULT,">> $opfn.u$upstreml.fa";
-open TCRSUT, ">>$opfn.5.txt";
-open TCFARESULT, ">>$opfn.5.fa";
-open OUTGFF, ">> $opfn.gff3";
+open RSUT,"> $opfn.3.txt" or die ("[-] Error: Can't open or creat $opfn.3.txt\n");
+open FASTARESULT,"> $opfn.u$upstreml.fa" or die ("[-] Error: Can't open or creat $opfn.u$upstreml.fa\n");
+open TCRSUT, "> $opfn.5.txt" or die ("[-] Error: Can't open or creat $opfn.5.txt\n");
+open TCFARESULT, "> $opfn.5.fa" or die ("[-] Error: Can't open or creat $opfn.5.fa\n");
+open OUTGFF, "> $opfn.gff3" or die ("[-] Error: Can't open or creat $opfn.gff3\n");
 print OUTGFF "##gff-version 3\n";
+open DOWNFA,"> $opfn.down$downstreml.fa" or die ("[-] Error: Can't open or creat $opfn.down$downstreml.fa\n");
 
 for (our $ni=0;$ni<$Chri;$ni++){
 	say "Deal with $Chrname[$ni].";
@@ -113,41 +108,34 @@ while ($seqall=~ /$testseq/igc){
 	our $l1=length ($1);
 	our $seqpos=pos($seqall)-5;
 	our $seqstarpos=$seqpos-$l1+16;
+	our $seqdownpos=$seqpos+$downstreml;
 	our $ChrID=$Chrname[$ni];
-#	say "$ChrID:$seqstarpos..$seqpos";
-#	
-#
-#	say $l3;
-#	
-#
-#	say "-----------------------------------------";
 
 	our $HID ="$ChrID"."H$count1";
 	#say $HID;
 	print RSUT  ">$HID"," ";
-	
 	print RSUT "$ChrID:$seqstarpos..",$seqpos," ";
-	
-	
 	print RSUT $l3," ";
-	
 	print RSUT $2," ";
-	
-	
 	print  RSUT $3," ";
 	print  RSUT $4,"\n";
-	
 	print RSUT $1,"\n";
 #	print RSUT "-----------------------------------------\n";
-	say FASTARESULT ">$ChrID"."H$count1.up $ChrID:$seqstarpos..$seqpos";
-	#our $rightfinalseq="";
+	print FASTARESULT ">$ChrID"."H$count1.up $ChrID:$seqstarpos..$seqpos\n";
+	our $rightfinalseq="";
 	if ($seqpos<$upstreml){
-	our $rightfinalseq = substr($seqall,1,$seqpos);
+	 $rightfinalseq = substr($seqall,1,$seqpos);
 	}else{
-	our $rightfinalseq = substr($seqall,$seqpos-$upstreml,$upstreml);
+	 $rightfinalseq = substr($seqall,$seqpos-$upstreml,$upstreml);
 	}
 	print FASTARESULT "$rightfinalseq\n";
+	
+	print DOWNFA ">$ChrID"."H$count1.down $ChrID:$seqpos..$seqdownpos\n";
+	our $downfasta = substr($seqall,$seqpos,$downstreml);
+	print DOWNFA "$downfasta\n";
+	
 	print OUTGFF "$ChrID\tEAhelitron\tCDS\t$seqstarpos\t$seqpos\t.\t+\t.\tName=$HID.3;ID=$HID;Parent=$HID;Type=Helitron;Super_Family=Helitron\n";
+	
 	our $TCi=0;
 	#say our $TCseq='([atgcn]{10}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{15})';
 	our $rfsl=length($rightfinalseq);
@@ -199,14 +187,26 @@ while ($seqall=~ /$testseq/igc){
 	print  RSUT $4,"\n";
 		print RSUT $1,"\n";
 #	print RSUT "-----------------------------------------\n";
-	say FASTARESULT ">tr$ChrID"."H$count2.up $ChrID:$seqstarpos..$seqpos";
+	print FASTARESULT ">tr$ChrID"."H$count2.up $ChrID:$seqstarpos..$seqpos\n";
 	our $trseqpos = pos($seqall)-5;
+	our $rightfinalseq="";
 	if($trseqpos<$upstreml){
-	our $rightfinalseq = substr($seqall,1,$trseqpos);
+	 $rightfinalseq = substr($seqall,1,$trseqpos);
 	}else{
-	our $rightfinalseq = substr($seqall,$trseqpos-$upstreml,$upstreml);
+	 $rightfinalseq = substr($seqall,$trseqpos-$upstreml,$upstreml);
 	}
-	say FASTARESULT $rightfinalseq;
+	print FASTARESULT "$rightfinalseq\n";
+	if ($seqpos<$downstreml) {
+    print DOWNFA ">tr$ChrID"."H$count2.down $ChrID:$seqpos..1\n";
+  }else {
+    my $temppos=$seqpos-$downstreml;
+    print DOWNFA ">tr$ChrID"."H$count2.down $ChrID:$seqpos..$temppos\n";
+  }
+	#print DOWNFA ">tr$ChrID"."H$count2.down $ChrID:$seqpos..$seqpos-$downstreml\n";
+	our $downfasta = substr($seqall,$trseqpos,$downstreml);
+	print DOWNFA "$downfasta\n";
+	
+	
 	print OUTGFF "$ChrID\tEAhelitron\tCDS\t$seqpos\t$seqstarpos\t.\t-\t.\tName=$trHID.3;ID=$trHID;Parent=$trHID;Type=Helitron;Super_Family=Helitron\n";
 
 	our $TCi=0;
@@ -236,6 +236,7 @@ close TCRSUT;
 close FASTARESULT;
 close TCFARESULT;
 close OUTGFF;
+close DOWNFA;
 
 ######################################
 #End  main

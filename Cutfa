@@ -2,7 +2,7 @@
 
 #AUTHORS
 # Kaining Hu (c) 2017
-# Cut Helitron upstream fasta.(Cutfa) v1.0000 2017/06/07
+# Cut Helitron upstream fasta.(Cutfa) v1.0001 2017/08/30
 # hukaining@gmail.com
 #
 use strict;
@@ -55,37 +55,52 @@ our $tmpseqname="";
 our $count1=0;
 our $count2=0;
 our $cutseq="";
-while(defined(our $seq = <>)){
-	if ($seq =~ m/^.*>/) {
-	$seq=~ m/^.*>([a-zA-Z0-9_.-]+) ?.*/;
-	 #print "$txonname$1$upstreml\n";
-	 #print OUT ">$txonname$1$upstreml\n";
-	 $tmpseqname=">$txonname$1$upstreml";
-	 $count1++;
-	}else{
-		$seq =~ s/\s//;
-	  $cutseq=substr($seq,-$upstreml);
-		 	if ($strict=~m/N/ig) {
-		 	print OUT "$tmpseqname\n";
-		 	print OUT "$cutseq\n";
-		 	}elsif ($strict=~m/Y/ig) {
-			 		if (length($cutseq)!=$upstreml or $cutseq=~/N/ig) {
-			 		next;
-			 		}else{
-			 		print OUT "$tmpseqname\n";
-			 		print OUT "$cutseq\n";
-			 		$count2++;
-			 	}
-		 	
-		 	}
-	 	
-	}
 
-			}
+######main
+
+while(defined(our $seq=<>)){
+  	if ($seq =~ m/^.*>/) {
+  	 $seq=~m/^.*>([a-zA-Z0-9_.-]+) ?.*/;
+  	 #print "$txonname$1$upstreml\n";
+  	 #print OUT ">$txonname$1$upstreml\n";
+  	 $tmpseqname=">$txonname$1$upstreml";
+  	 $count1++;
+  	 next;
+  	 }else{
+  		$seq=~s/\s//;
+  	  $cutseq=substr($seq,-$upstreml);
+  	     
+  	     if ($strict=~m/Y/ig){
+  	      next if (length($cutseq)!=$upstreml or $cutseq=~/N/ig); 
+  			 		       print OUT "$tmpseqname\n";
+  			 		       print OUT "$cutseq\n";
+  			 		       $count2++;
+  	     }else{
+  	        print OUT "$tmpseqname\n";
+  		 	    print OUT "$cutseq\n";
+  		 	    $count2++;
+  	     }
+  	  
+  	  
+  #		 	if ($strict=~m/N/ig) {
+  #		 	   print OUT "$tmpseqname\n";
+  #		 	   print OUT "$cutseq\n";
+  #		 	   $count2++;
+  #		 	   next;
+  #		 	   }elsif ($strict=~m/Y/ig) {
+  #		 	    #print length($cutseq)."\n";
+  #			 		       next if (length($cutseq)!=$upstreml or $cutseq=~/N/ig); 
+  #			 		       print OUT "$tmpseqname\n";
+  #			 		       print OUT "$cutseq\n";
+  #			 		       $count2++;
+  #			 		                 #next;
+  #			 	                 
+  #		 	    }
+  	 }
+	} #while End.
 
 
-
-print "Finished Cut @tmpfliename upstream $upstreml bp to $opfn.fa\nStrict mode: $strict.\n$count1 seqs cut $count2 seqs.\n";
+print "Finished Cut @tmpfliename upstream $upstreml bp to $opfn.fa\nStrict mode: $strict \n$count1 seqs cut $count2 seqs.\n";
 close OUT;
 our $endtime=time();
 printf "Done! %g Sec %g Min\n",$endtime-$starttime,($endtime-$starttime)/60;

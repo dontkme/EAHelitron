@@ -2,14 +2,14 @@
 
 #AUTHORS
 # Kaining Hu (c) 2017
-# Easy to Annotate Helitrons command line (EAHelitron)v1.3000 2017/08/29
+# Easy to Annotate Helitrons command line (EAHelitron)v1.3001 2017/08/30
 # hukaining@gmail.com
 
 use strict;
 use warnings;
 use 5.010;
 use Getopt::Long;
-use Pod::Usage;
+#use Pod::Usage qw(pod2usage);
 use Time::HiRes 'time';
 #use Parallel::ForkManager;
 #our $MAX_processes=2;
@@ -22,8 +22,11 @@ our $downstreml=500;
 #our $seqfilename ='';
 #GetOptions("i=s"=>\$seqfilename,"o=s" => \$opfn,"verbose"=>\$verbose)
 #or die("Error in command line arguments\n perl Searchhelitron -o <outputfile> (inputfile)\n");
-GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"d=i"=>\$downstreml)
+    my $man = 0;
+    my $help = 0;
+GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u|up=i"=>\$upstreml,"d|down=i"=>\$downstreml)
 or die("Error in command line arguments\nUsage: perl EAHelitron [-o outfileprefix][-u|upstremlength int][-d|downstremlength int] <inputfile>\n");
+
 ###################sub TRseq##########
 sub TRseq($)
 {
@@ -38,8 +41,11 @@ sub TRseq($)
 ##################TRseq End#############
 
 our $loadingstarttime=time();
-
-print "Start loading genomeic sequence.\n";
+if (not $ARGV[0]) {
+	die ("[-] Error: Not find an inputfile.\nUsage: perl EAHelitron [-o outfileprefix][-u|upstremlength int][-d|downstremlength int] <inputfile>\n");
+}
+my @tmpfliename=@ARGV;
+print "Start loading @ARGV genomeic sequence fasta file(s).\n";
 #if(!open SEQFILENAME,"< $seqfilename"){
 # die "File not Found\n";
 #}
@@ -117,8 +123,8 @@ while ($seqall=~ /$testseq/igc){
 	print RSUT "$ChrID:$seqstarpos..",$seqpos," ";
 	print RSUT $l3," ";
 	print RSUT $2," ";
-	print  RSUT $3," ";
-	print  RSUT $4,"\n";
+	print RSUT $3," ";
+	print RSUT $4,"\n";
 	print RSUT $1,"\n";
 #	print RSUT "-----------------------------------------\n";
 	print FASTARESULT ">$ChrID"."H$count1.up $ChrID:$seqstarpos..$seqpos\n";

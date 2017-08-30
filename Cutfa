@@ -67,7 +67,7 @@ while(defined(our $seq=<>)){
   	 $count1++;
   	 next;
   	 }else{
-  		$seq=~s/\s//;
+  		$seq=~s/\s//g;
   	  $cutseq=substr($seq,-$upstreml);
   	     
   	     if ($strict=~m/Y/ig){

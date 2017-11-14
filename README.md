@@ -2,8 +2,9 @@
 
 Easy to annotate helitrons Unix-like command line.              
 
-EAHelitron is written by Perl language. Used the helitron conversed structure traits: 5’ terminal with TC, 3’ terminal with CTAGt and before CTAG 2-10 nt has an GC-rich hairpin loop. We used the Perl regular expression engine and its Embedded-Code Construct to find out all matched locals, then print and convert to a GFF3 format file. Using the gff3 file made above, we can visual these helitrons in IGV, Gbrowse, Jbrowse and other kind of genome visualization tools, and character the captured genes easily.
-EAHelitron is an unix-like progrme you can run it in all Perl5.10+ supported machines and write the command in shell script. Linux and Windows test passed.
+EAHelitron is written by Perl. Used the helitron conversed structure traits: 5’ terminal with TC, 3’ terminal with CTAGt and before CTAG 2-10 nt has an GC-rich hairpin loop. We used the Perl regular expression engine and its Embedded-Code Construct to find out all matched results, then print and convert to a GFF3 format file. Using the gff3 file made above, we can visual these helitrons in IGV, Gbrowse, Jbrowse and other kind of genome visualization tools, and character the captured genes easily.
+
+EAHelitron is an unix-like program you can run it in all Perl5.10+ supported machines and write the command in your shell script. Linux and Windows test passed.
 
 ## Getting Started
 
@@ -41,12 +42,12 @@ If the screen shows the help information. It woked.
 
 Explain how to run the EAHelitron for this system
 ```
-   perl EAHeliton –o testEAHout –u 20000 teat.fas
+perl EAHeliton –o testEAHout –u 20000 teat.fas
 ```
 OR 
 
 ```  
-  ./EAHeliton –o testEAHout –u 20000 teat.fas
+./EAHeliton –o testEAHout –u 20000 teat.fas
 ```   
 -o means output file prefix.
 -u means how long upstream you want to use to search 5’ terminal. Default is 3000.
@@ -55,7 +56,7 @@ We also provide EAHelitron_P a Multi-Threading version to speed up the program r
 (Need Perl Parallel::ForkManager . You can install it by command: capn Parallel::ForkManager )
 
 ```
-    perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
+perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
 ```
 -p means how many threads you want to use. Suggest not bigger than the sequenced numbers your input fasta format file contained.
 

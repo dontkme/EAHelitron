@@ -1,4 +1,4 @@
-# EAHelitron   ![hairpin](https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png)                               
+# EAHelitron   ![hairpin](https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png "hairpin structure")                               
 
 Easy to annotate helitrons Unix-like command line.              
 
@@ -7,7 +7,7 @@ EAHelitron is an unix-like progrme you can run it in all Perl5.10+ supported mac
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine.
 
 ### Prerequisites
 

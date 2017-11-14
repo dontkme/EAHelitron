@@ -1,6 +1,9 @@
-# EAHelitron   ![hairpin](https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png "hairpin structure")                               
+# EAHelitron    
+<img src="https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png"  align="right" />
 
-Easy to annotate helitrons Unix-like command line.              
+[![releaseVersion](https://img.shields.io/badge/release%20version-1.3.1-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--09--19-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+
+Easy to Annotate Helitrons Unix-like command line.              
 
 EAHelitron is written by Perl. Used the helitron conversed structure traits: 5’ terminal with TC, 3’ terminal with CTAGt and before CTAG 2-10 nt has an GC-rich hairpin loop. We used the Perl regular expression engine and its Embedded-Code Construct to find out all matched results, then print and convert to a GFF3 format file. Using the gff3 file made above, we can visual these helitrons in IGV, Gbrowse, Jbrowse and other kind of genome visualization tools, and character the captured genes easily.
 
@@ -87,6 +90,7 @@ The out put has five files, named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.g
 **Hu Kaining** - *Initial work* - [dontkme](https://github.com/dontkme)
 
 ## License
+![licence](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 

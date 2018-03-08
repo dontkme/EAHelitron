@@ -69,6 +69,7 @@ LINE: while(defined(our $seq=<>)){
   	 }else{
   		$seq=~s/\s//g;
   		my $seql=0;
+  		$seql=length($seq);
   		#print $seql=length($seq);
   		next LINE if($strict=~m/Y/ig && $seql<$upstreml);
   	  $cutseq=substr($seq,-$upstreml);

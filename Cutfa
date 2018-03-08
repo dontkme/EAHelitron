@@ -69,18 +69,18 @@ LINE: while(defined(our $seq=<>)){
   	 }else{
   		$seq=~s/\s//g;
   		my $seql=0;
-  		print $seql=length($seq);
+  		#print $seql=length($seq);
   		next LINE if($strict=~m/Y/ig && $seql<$upstreml);
   	  $cutseq=substr($seq,-$upstreml);
   	     #$cutseq=~s/\s//g;
   	     #chomp $cutseq;
-  	     print my $cutl=length($cutseq);
+  	     #print my $cutl=length($cutseq);
   	     if ($strict=~m/Y/ig){
   	       
   	      
   	       if ($seql<$upstreml || $cutseq=~/N/ig){next LINE;}else {; 
-  	               print "$seql\n";
-  	               print "$cutl\n";
+  	               #print "$seql\n";
+  	               #print "$cutl\n";
   			 		       print OUT "$tmpseqname\n";
   			 		       print OUT "$cutseq\n";
   			 		       $count2++;

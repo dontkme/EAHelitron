@@ -1,8 +1,8 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 #AUTHORS
-# Kaining Hu (c) 2017
-# Easy to Annotate Helitrons command line (EAHelitron)v1.3100 2017/09/19
+# Kaining Hu (c) 2018
+# Easy to Annotate Helitrons command line (EAHelitron)v1.4000 2018/08/31
 # hukaining@gmail.com
 
 use strict;
@@ -19,12 +19,53 @@ our $opfn="";
 my $verbose;
 our $upstreml=3000;
 our $downstreml=500;
+our $fuzzylv=0;
+our $finalCTAGT="ctagt";
+our @CTAGT=qw/
+           CTAGT
+          CT[AG]GT
+          CTA[AG]T
+          CT[AG]{2}T
+          CT[AG]{2}.{1}
+          CTAG.{1}
+          /;
+
 #our $seqfilename ='';
 #GetOptions("i=s"=>\$seqfilename,"o=s" => \$opfn,"verbose"=>\$verbose)
 #or die("Error in command line arguments\n perl Searchhelitron -o <outputfile> (inputfile)\n");
-GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"d=i"=>\$downstreml)
-or die("Error in command line arguments\nUsage: perl EAHelitron [-o outfileprefix][-u|upstremlength int][-d|downstremlength int] <inputfile>\n");
+GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"d=i"=>\$downstreml, "r=i"=>\$fuzzylv)
+or die("[-]Error in command line arguments
+  Usage: perl EAHelitron [options] <input FASTA file>
+    options:
+	 [-o string|outprefix Default: EAHeli_out]
+	 [-u int|upstream length Default: 3000]
+	 [-d int|downstream length Default: 500]
+	 [-r int[0-5]|CTRRt 3' terminal fuzzy level; 
+	         0: CTAGT
+	         1: CT[AG]GT
+	         2: CTA[AG]T
+	         3: CT[AG]{2}T
+	         4: CT[AG]{2}.{1}
+	         5: CTAG.{1}
+	         Default: 0]
+    Note: Easy to Annotate Helitrons command line (EAHelitron)v1.4000 2018/08/31.\n");
+
 ###################sub TRseq##########
+#say $fuzzylv;
+#if ($fuzzylv==""){
+#  $fuzzylv=0;
+#}elsif ($fuzzylv>5 or $fuzzylv<0) {
+#  die ("Please input fuzzy levle in int 0 to 5.\n");
+#}
+if ($fuzzylv>5 or $fuzzylv<0) {
+  die ("Please input fuzzy levle in int 0 to 5.\n");
+}
+#say $fuzzylv;
+$finalCTAGT = $CTAGT[$fuzzylv];
+print "CTAGT fuzzy level: $fuzzylv $finalCTAGT\n";
+  
+
+
 sub TRseq($)
 {
 	my ($pinseq) = @_;
@@ -38,6 +79,9 @@ sub TRseq($)
 ##################TRseq End#############
 
 our $loadingstarttime=time();
+
+
+
 
 print "Start loading genomeic sequence.\n";
 #if(!open SEQFILENAME,"< $seqfilename"){
@@ -80,7 +124,8 @@ print "Output files:$opfn.fas $opfn.gff3\n";
 
 our $starttime=time();
 our $hairpinpattern="cccgccc";
-say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
+#say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
+say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
 say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
 print "Running. Please wait for a minite.\n";
 #####################################

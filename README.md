@@ -53,6 +53,7 @@ OR
 ./EAHeliton –o testEAHout –u 20000 teat.fas
 ```   
 Options:
+        
          [-o string|outprefix Default: EAHeli_out]
          [-u int|upstream length Default: 3000]
          [-d int|downstream length Default: 500]

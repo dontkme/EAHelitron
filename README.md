@@ -1,7 +1,7 @@
 # EAHelitron    
 <img src="https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png"  align="right" />
 
-[![releaseVersion](https://img.shields.io/badge/release%20version-1.4.0-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--09--19-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+[![releaseVersion](https://img.shields.io/badge/release%20version-1.4.0-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2018--08--31-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
 
 Easy to Annotate Helitrons Unix-like command line.              
 

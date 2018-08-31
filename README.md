@@ -1,7 +1,7 @@
 # EAHelitron    
 <img src="https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png"  align="right" />
 
-[![releaseVersion](https://img.shields.io/badge/release%20version-1.3.1-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--09--19-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+[![releaseVersion](https://img.shields.io/badge/release%20version-1.4.0-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--09--19-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
 
 Easy to Annotate Helitrons Unix-like command line.              
 
@@ -52,8 +52,18 @@ OR
 ```  
 ./EAHeliton –o testEAHout –u 20000 teat.fas
 ```   
--o means output file prefix.
--u means how long upstream you want to use to search 5’ terminal. Default is 3000.
+Options:
+         [-o string|outprefix Default: EAHeli_out]
+         [-u int|upstream length Default: 3000]
+         [-d int|downstream length Default: 500]
+         [-r int[0-5]|CTRRt 3' terminal fuzzy level;
+                 0: CTAGT
+                 1: CT[AG]GT
+                 2: CTA[AG]T
+                 3: CT[AG]{2}T
+                 4: CT[AG]{2}.{1}
+                 5: CTAG.{1}
+                 Default: 0]
 
 We also provide EAHelitron_P a Multi-Threading version to speed up the program running with big genome. 
 (Need Perl Parallel::ForkManager . You can install it by command: capn Parallel::ForkManager )
@@ -76,6 +86,8 @@ The out put has five files, named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.g
 *.gff3 contain the helitron location information in GFF3 format.
 
 ## History
+
+(EAHelitron)v1.4000 2018/08/31 Add CTAGT fuzzy level [0-5] option.
 
 (EAHelitron)v1.3100 2017/09/19 Add snp swich.
 

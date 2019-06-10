@@ -2,7 +2,7 @@
 
 #AUTHORS
 # Kaining Hu (c) 2019
-# Easy to Annotate Helitrons command line (EAHelitron)v1.5000 2019/03/08
+# Easy to Annotate Helitrons command line (EAHelitron)v1.5100 2019/06/10
 # hukaining@gmail.com
 
 use strict;
@@ -140,6 +140,7 @@ print OUTGFF "##gff-version 3\n";
 open DOWNFA,"> $opfn.down$downstreml.fa" or die ("[-] Error: Can't open or creat $opfn.down$downstreml.fa\n");
 open GENOMELENH,"> $opfn.len.txt" or die ("[-] Error: Can't open or creat $opfn.len.txt\n");
 print GENOMELENH "Seqname\tSeqLength\t[+]\t[-]\tall\t[+]Helitron Density\t[-]Helitron Density\tSeq Helitron Density\n";
+open OUTBED, "> $opfn.bed" or die ("[-] Error: Can't open or creat $opfn.bed\n");
 our $genomel =0; 
 our $countall=0;
 our $count1all=0;
@@ -169,8 +170,8 @@ for (our $ni=0;$ni<$Chri;$ni++){
 		print RSUT "$ChrID:$seqstarpos..",$seqpos," ";
 		print RSUT $l3," ";
 		print RSUT $2," ";
-		print  RSUT $3," ";
-		print  RSUT $4,"\n";
+		print RSUT $3," ";
+		print RSUT $4,"\n";
 		print RSUT $1,"\n";
 	#	print RSUT "-----------------------------------------\n";
 		print FASTARESULT ">$ChrID"."H$count1.up $ChrID:$seqstarpos..$seqpos\n";
@@ -187,6 +188,7 @@ for (our $ni=0;$ni<$Chri;$ni++){
 		print DOWNFA "$downfasta\n";
 		
 		print OUTGFF "$ChrID\tEAhelitron\tCDS\t$seqstarpos\t$seqpos\t.\t+\t.\tName=$HID.3;ID=$HID;Parent=$HID;Type=Helitron;Super_Family=Helitron\n";
+		print OUTBED "$ChrID\t".($seqstarpos-1)."\t".($seqpos)."\t$HID\t1\t+\n";
 		
 		our $TCi=0;
 		#say our $TCseq='([atgcn]{10}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{15})';
@@ -201,6 +203,7 @@ for (our $ni=0;$ni<$Chri;$ni++){
 			print TCRSUT ">$HID.5.$TCi $ChrID:$TCgposstar..$TCgpos $2\n";
 			print TCRSUT "$1\n";
 			print OUTGFF "$ChrID\tEAhelitron\tCDS\t$TCgposstar\t$TCgpos\t.\t+\t.\tName=$HID.5.$TCi;ID=$HID.5.$TCi;Parent=$HID;Type=Helitron;Super_Family=Helitron\n";
+			# print OUTBED "$ChrID\t".($seqstarpos-1)."\t".($seqpos-1)."\t$HID\t1\t+\n";
 			print TCFARESULT ">$HID.5.$TCi $ChrID:$TCgposstar..$seqpos\n";
 			my $FullHseq=substr($rightfinalseq,$TCposstar-1,$upstreml);
 			print TCFARESULT "$FullHseq\n"; 
@@ -257,7 +260,7 @@ for (our $ni=0;$ni<$Chri;$ni++){
 		
 		
 		print OUTGFF "$ChrID\tEAhelitron\tCDS\t$seqpos\t$seqstarpos\t.\t-\t.\tName=$trHID.3;ID=$trHID;Parent=$trHID;Type=Helitron;Super_Family=Helitron\n";
-
+    print OUTBED "$ChrID\t".($seqpos-1)."\t".($seqstarpos)."\t$trHID\t1\t-\n";
 		our $TCi=0;
 		#say our $TCseq='([atgcn]{10}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{15})';
 		our $rfsl=length($rightfinalseq);
@@ -298,6 +301,7 @@ close TCFARESULT;
 close OUTGFF;
 close DOWNFA;
 close GENOMELENH;
+close OUTBED;
 
 ######################################
 #End  main

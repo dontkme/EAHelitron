@@ -1,7 +1,7 @@
 # EAHelitron    
 <img src="https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png"  align="right" />
 
-[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.0-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2019--03--08-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.1-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2019--03--08-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
 
 Easy to Annotate Helitrons Unix-like command line.              
 
@@ -87,6 +87,8 @@ The out put has five files, named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.g
 *.gff3 contain the helitron location information in GFF3 format.
 
 ## History
+
+(EAHelitron)v1.5100 2019/06/10 Add feature. Output a BED of 3’-ends.  (*.bed)
 
 (EAHelitron)v1.5000 2019/03/08 Add feature. Output a summary of genome sequences length, Helitron counts and Helitron Densities. (*.len.txt)
 

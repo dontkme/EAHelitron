@@ -67,12 +67,13 @@ Options:
                  Default: 0]
 
 We also provide EAHelitron_P a Multi-Threading version to speed up the program running with big genome. 
-(Need Perl Parallel::ForkManager . You can install it by command: capn Parallel::ForkManager )
+
+(Need Perl Parallel::ForkManager . You can install it by command: cpan Parallel::ForkManager )
 
 ```
 perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
 ```
--p means how many threads you want to use. Suggest not bigger than the sequenced numbers your input fasta format file contained.
+-p means how many threads you want to use. Suggest not larger than the sequenced numbers your input fasta format file contained.
 
 The out put has five files, named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000.fas. (EAHout could be you –o option set prefix, 20000 could be you set –u option value). 
 

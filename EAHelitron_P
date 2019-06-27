@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 #use strict;
-# Write by Hu Kaining 2015-12-12.
-#Version 1.2002
+# Write by Hu Kaining 2019-06-27.
+#Version 1.3100
 use warnings;
 use 5.010;
 use Getopt::Long;
@@ -65,12 +65,16 @@ while(defined(our $seq = <>)){
 	$Chri++;
 	}else{
 		$seq =~ s/\s//;
+		$seq =~ tr/MRWSYKVHDBmrwsykvhdb/CGTGCGGCGGCGTGCGGCGG/;#1.31add snp replace
 	 $Chrseq[$Chri-1] .=$seq;
 			}
 }
 #close SEQFILENAME;
 our $loadingendtime=time();
 say "$Chri Sequences";
+if ($MAX_processes>$Chri){
+	$MAX_processes=$Chri;
+}
 print "Finished loading!\n";
 printf "%g Sec %g Min\n",$loadingendtime-$loadingstarttime,($loadingendtime-$loadingstarttime)/60;
 if ($opfn eq ""){

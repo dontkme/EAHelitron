@@ -59,7 +59,8 @@ our @Chrseq=();
 while(defined(our $seq = <>)){
 #while(our $seq = <SEQFILENAME>){
 	if ($seq =~ m/^.*>/) {
-	$seq=~ m/^.*>(\w+) ?.*/;
+	#$seq=~ m/^.*>(\w+) ?.*/;
+	$seq=~ m/^.*>([a-zA-Z0-9_.-]+) ?.*/;
 	say $1;
 	 $Chrname[$Chri]= $1;
 	$Chri++;

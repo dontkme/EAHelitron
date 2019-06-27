@@ -48,7 +48,7 @@ or die("[-]Error in command line arguments
 	         4: CT[AG]{2}.{1}
 	         5: CTAG.{1}
 	         Default: 0]
-    Note: Easy to Annotate Helitrons command line (EAHelitron)v1.5000 2019/03/08.\n");
+    Note: Easy to Annotate Helitrons command line (EAHelitron)v1.5100 2019/06/10.\n");
 
 ###################sub TRseq##########
 #say $fuzzylv;

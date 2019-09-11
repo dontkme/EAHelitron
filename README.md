@@ -32,7 +32,7 @@ Unzip the EAHelitron-master.zip
 unzip EAHelitron-master.zip
 ```
 
-And enter the unzipped fold, run EAHelitron.
+And enter the unzipped folder, run EAHelitron.
 
 ```
 cd EAHelitron-master
@@ -66,26 +66,32 @@ Options:
                  5: CTAG.{1}
                  Default: 0]
 
-We also provide EAHelitron_P a Multi-Threading version to speed up the program running with big genome. 
+We also provide EAHelitron_P a Multi-Threading version to speed up the running with big genome. 
 
-(Need Perl Parallel::ForkManager . You can install it by command: cpan Parallel::ForkManager )
+(Need Perl Parallel::ForkManager. You could install it by command: cpan Parallel::ForkManager )
 
 ```
 perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
 ```
--p means how many threads you want to use. Suggest not larger than the sequenced numbers your input fasta format file contained.
+-p: how many threads you want to use. Suggest not greater than the sequenced numbers your input fasta file contained.
 
-The out put has five files, named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000.fas. (EAHout could be you –o option set prefix, 20000 could be you set –u option value). 
+The outputs named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000.fas. (EAHout could be the prefix you set by –o option, 20000 could be your –u option value). 
 
-*.3.txt file contains all 3’ terminal sequences and 10nt left flank, 4nt right flank in fasta format. All sequences named by it local chromosome name, a ”H” means helitron, their matched course and a “.3” suffix to mark they are 3’ terminal sequences. The minus strain terminal have a “tr” prefix.(Like Chr1H10.3, trChr5H40.3).
+*.3.txt: All 3’ terminal sequences with a 10nt left flank and a 4nt right flank in fasta format. All sequences named by its local chromosome name, a 'H' means Helitron, '.3' suffix to mark they are 3’ terminal sequences. The minus strain terminal have a 'tr' prefix. (e.g. Chr1H10.3, trChr5H40.3).
 
-*.5.txt file contains all 5’terminal sequences which were matched in 3’ terminal’s upstream with 5nt left flank and 20nt right flank. The sequences’ name have .5.1 suffix to mark they are 5’ terminal and the match number.(Chr1H10.5.1,trChr5H40.5.2). 
+*.5.txt: All 5’terminal sequences which were matched in 3’ terminal’s upstream sequences with a 5 nt left flank and a 20 nt right flank. The name of sequences have .5.1 suffix to mark they are 5’ terminal and the match orders numbers. (e.g. Chr1H10.5.1,trChr5H40.5.2) 
 
-*.5.fa file contain the matched helitron whole sequence which start with the 5’ terminal and end with 3’ terminal.
+*.5.fa: Possible full-length Helitron sequences which start with 5’ terminal and end with 3’ terminal.
 
-*.u*.fas contain all 3’ terminal upstream sequences.  
+*.u*.fas: All 3’ terminal upstream sequences.  
 
-*.gff3 contain the helitron location information in GFF3 format.
+*.d*.fas: All 3’ terminal downstream sequences.
+
+*.gff3: Helitron location information in GFF3 format.
+
+*.bed: Helitron 3'-ends location in bed format.
+
+*.len.txt: Summary of genome sequences length, Helitron counts and Helitron Densities
 
 ## History
 
@@ -95,13 +101,13 @@ The out put has five files, named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.g
 
 (EAHelitron)v1.4000 2018/08/31 Add CTAGT fuzzy level [0-5] option.
 
-(EAHelitron)v1.3100 2017/09/19 Add snp swich.
+(EAHelitron)v1.3100 2017/09/19 Add snp switch.
 
 (EAHelitron)v1.3000 2017/08/29 Add downstream feature.
 
 ...
 
-(EAHelitron)v1.0000 2016/09/22 fist version upload to GitHub.
+(EAHelitron)v1.0000 2016/09/22 first version upload to GitHub.
 
 ## Authors
 

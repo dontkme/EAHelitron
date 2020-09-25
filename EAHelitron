@@ -1,8 +1,8 @@
 ﻿#!/usr/bin/env perl
 
 #AUTHORS
-# Kaining Hu (c) 2019
-# Easy to Annotate Helitrons command line (EAHelitron)v1.5100 2019/06/10
+# Kaining Hu (c) 2020
+# Easy to Annotate Helitrons command line (EAHelitron)v1.5200 2020/09/25
 # hukaining@gmail.com
 
 use strict;
@@ -48,7 +48,7 @@ or die("[-]Error in command line arguments
 	         4: CT[AG]{2}.{1}
 	         5: CTAG.{1}
 	         Default: 0]
-    Note: Easy to Annotate Helitrons command line (EAHelitron)v1.5000 2019/03/08.\n");
+    Note: Easy to Annotate Helitrons command line (EAHelitron)v1.5200 2020/09/25.\n");
 
 ###################sub TRseq##########
 #say $fuzzylv;
@@ -104,7 +104,8 @@ our @Chrseq=();
 while(defined(our $seq = <>)){
 #while(our $seq = <SEQFILENAME>){
 	if ($seq =~ m/^.*>/) {
-	$seq=~ m/^.*>([a-zA-Z0-9_.-]+) ?.*/;
+	#$seq=~ m/^.*>([a-zA-Z0-9_.-]+) ?.*/;
+	$seq=~ m/^\s*>\s*(\S+)\s*(.*)/; #1.52 new RE based on BioPerl
 	print "$1\n";
 	 $Chrname[$Chri]= $1;
 	$Chri++;

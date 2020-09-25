@@ -132,16 +132,16 @@ print "\nRunning. Please wait for a few minutes.\n";
 #####################################
 #Start main 
 #####################################
-open RSUT,"> $opfn.3.txt" or die ("[-] Error: Can't open or creat $opfn.3.txt\n");
-open FASTARESULT,"> $opfn.u$upstreml.fa" or die ("[-] Error: Can't open or creat $opfn.u$upstreml.fa\n");
-open TCRSUT, "> $opfn.5.txt" or die ("[-] Error: Can't open or creat $opfn.5.txt\n");
-open TCFARESULT, "> $opfn.5.fa" or die ("[-] Error: Can't open or creat $opfn.5.fa\n");
-open OUTGFF, "> $opfn.gff3" or die ("[-] Error: Can't open or creat $opfn.gff3\n");
+open RSUT,"> $opfn.3.txt" or die ("[-] Error: Can't open or create $opfn.3.txt\n");
+open FASTARESULT,"> $opfn.u$upstreml.fa" or die ("[-] Error: Can't open or create $opfn.u$upstreml.fa\n");
+open TCRSUT, "> $opfn.5.txt" or die ("[-] Error: Can't open or create $opfn.5.txt\n");
+open TCFARESULT, "> $opfn.5.fa" or die ("[-] Error: Can't open or create $opfn.5.fa\n");
+open OUTGFF, "> $opfn.gff3" or die ("[-] Error: Can't open or create $opfn.gff3\n");
 print OUTGFF "##gff-version 3\n";
-open DOWNFA,"> $opfn.down$downstreml.fa" or die ("[-] Error: Can't open or creat $opfn.down$downstreml.fa\n");
-open GENOMELENH,"> $opfn.len.txt" or die ("[-] Error: Can't open or creat $opfn.len.txt\n");
+open DOWNFA,"> $opfn.down$downstreml.fa" or die ("[-] Error: Can't open or create $opfn.down$downstreml.fa\n");
+open GENOMELENH,"> $opfn.len.txt" or die ("[-] Error: Can't open or create $opfn.len.txt\n");
 print GENOMELENH "Seqname\tSeqLength\t[+]\t[-]\tall\t[+]Helitron Density\t[-]Helitron Density\tSeq Helitron Density\n";
-open OUTBED, "> $opfn.bed" or die ("[-] Error: Can't open or creat $opfn.bed\n");
+open OUTBED, "> $opfn.bed" or die ("[-] Error: Can't open or create $opfn.bed\n");
 our $genomel =0; 
 our $countall=0;
 our $count1all=0;

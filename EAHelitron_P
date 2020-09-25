@@ -1,7 +1,10 @@
 #!/usr/bin/perl
-#use strict;
-# Write by Hu Kaining 2019-06-27.
-#Version 1.3100
+
+#AUTHORS
+# Kaining Hu (c) 2020
+# Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.4000 2020/09/25
+# hukaining@gmail.com
+
 use warnings;
 use 5.010;
 use Getopt::Long;
@@ -15,11 +18,55 @@ use re 'eval';
 our $opfn="";
 my $verbose;
 our $upstreml=3000;
+our $downstreml=500;
+our $fuzzylv=0;
+our $finalCTAGT="ctagt";
+our @CTAGT=qw/
+           CTAGT
+          CT[AG]GT
+          CTA[AG]T
+          CT[AG]{2}T
+          CT[AG]{2}.{1}
+          CTAG.{1}
+          /;
 #our $seqfilename ='';
 #GetOptions("i=s"=>\$seqfilename,"o=s" => \$opfn,"verbose"=>\$verbose)
 #or die("Error in command line arguments\n perl Searchhelitron -o <outputfile> (inputfile)\n");
-GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"p=i"=>\$MAX_processes)
-or die("Error in command line arguments\nUsage: perl EAHelitron [-o outfileprefix][-u|upstremlength int][-p int |threads number] <inputfile>\n");
+GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"p=i"=>\$MAX_processes,"d=i"=>\$downstreml,"r=i"=>\$fuzzylv)
+or die("[-]Error in command line arguments
+  Usage: perl EAHelitron_P [options] <input FASTA file>
+    options:
+	 [-o string|output prefix Default: EAHeli_out]
+	 [-u int|upstream length Default: 3000]
+	 [-d int|downstream length Default: 500]
+	 [-p int |threads number Default: 1]
+	 [-r int[0-5]|CTRRt 3' terminal fuzzy level; 
+	         0: CTAGT
+	         1: CT[AG]GT
+	         2: CTA[AG]T
+	         3: CT[AG]{2}T
+	         4: CT[AG]{2}.{1}
+	         5: CTAG.{1}
+	         Default: 0]
+    Note: Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.4000 2020/09/25.\n");
+
+if ($fuzzylv>5 or $fuzzylv<0) {
+  die ("Please input fuzzy levle in int 0 to 5.\n");
+}
+#say $fuzzylv;
+$finalCTAGT = $CTAGT[$fuzzylv];
+print "CTAGT fuzzy level: $fuzzylv $finalCTAGT\n";
+print "upstream length: $upstreml\n";
+print "downstream length: $downstreml \n";
+# print "CTAGT fuzzy level: $fuzzylv $finalCTAGT\n";
+if ($opfn eq ""){
+	$opfn="EAHeli_out";
+	print "output prefix:$opfn\n";
+	}else{
+	print "output prefix:$opfn\n";
+}
+
+
 ###################sub TRseq##########
 sub TRseq($)
 {
@@ -60,7 +107,8 @@ while(defined(our $seq = <>)){
 #while(our $seq = <SEQFILENAME>){
 	if ($seq =~ m/^.*>/) {
 	#$seq=~ m/^.*>(\w+) ?.*/;
-	$seq=~ m/^.*>([a-zA-Z0-9_.-]+) ?.*/;
+	#$seq=~ m/^.*>([a-zA-Z0-9_.-]+) ?.*/;
+	$seq=~ m/^\s*>\s*(\S+)\s*(.*)/; #1.52 new RE based on BioPerl
 	say $1;
 	 $Chrname[$Chri]= $1;
 	$Chri++;
@@ -78,12 +126,12 @@ if ($MAX_processes>$Chri){
 }
 print "Finished loading!\n";
 printf "%g Sec %g Min\n",$loadingendtime-$loadingstarttime,($loadingendtime-$loadingstarttime)/60;
-if ($opfn eq ""){
-$opfn="EAHeli_out";
-say "Output files:$opfn.fas $opfn.gff3";
-}else{
-say "Output files:$opfn.fas $opfn.gff3";
-}
+# if ($opfn eq ""){
+# $opfn="EAHeli_out";
+# say "Output files:$opfn.fa $opfn.gff3";
+# }else{
+# say "Output files:$opfn.fa $opfn.gff3";
+# }
 
 #open OUT ,">>Brapagenome.out.txt";
 #print OUT "@Chrname\n";
@@ -91,29 +139,50 @@ say "Output files:$opfn.fas $opfn.gff3";
 #close OUT;
 our $starttime=time();
 our $hairpinpattern="cccgccc";
-say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
+#say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
+say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
 say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
 say "Running. Please wait for minites.";
 #####################################
 #Start main 
 #####################################
 
-open RSUT,">>$opfn.3.txt";
-open FASTARESULT,">>$opfn.u$upstreml.fas";
-open TCRSUT, ">>$opfn.5.txt";
-open TCFARESULT, ">>$opfn.5.fa";
-open OUTGFF, ">>$opfn.gff3";
+# open RSUT,">>$opfn.3.txt";
+# open FASTARESULT,">>$opfn.u$upstreml.fa";
+# open TCRSUT, ">>$opfn.5.txt";
+# open TCFARESULT, ">>$opfn.5.fa";
+# open OUTGFF, ">>$opfn.gff3";
+# print OUTGFF "##gff-version 3\n";
+# open DOWNFA,">> $opfn.down$downstreml.fa" or die ("[-] Error: Can't open or create $opfn.down$downstreml.fa\n");
+
+open RSUT,"> $opfn.3.txt" or die ("[-] Error: Can't open or create $opfn.3.txt\n");
+open FASTARESULT,"> $opfn.u$upstreml.fa" or die ("[-] Error: Can't open or create $opfn.u$upstreml.fa\n");
+open TCRSUT, "> $opfn.5.txt" or die ("[-] Error: Can't open or create $opfn.5.txt\n");
+open TCFARESULT, "> $opfn.5.fa" or die ("[-] Error: Can't open or create $opfn.5.fa\n");
+open OUTGFF, "> $opfn.gff3" or die ("[-] Error: Can't open or create $opfn.gff3\n");
 print OUTGFF "##gff-version 3\n";
+open DOWNFA,"> $opfn.down$downstreml.fa" or die ("[-] Error: Can't open or create $opfn.down$downstreml.fa\n");
+open OUTBED, "> $opfn.bed" or die ("[-] Error: Can't open or create $opfn.bed\n");
 our $count1=0;
 
 our $pm=Parallel::ForkManager->new($MAX_processes);
 for (our $ni=0;$ni<$Chri;$ni++){
 	$pm->start and next;
-	open RSUTCA,">>cache.$Chrname[$ni].3.txt";
-	open FASTARESULTCA,">>cache.$Chrname[$ni].u$upstreml.fas";
-	open TCRSUTCA, ">>cache.$Chrname[$ni].5.txt";
-	open TCFARESULTCA, ">>cache.$Chrname[$ni].5.fa";
-	open OUTGFFCA, ">>cache.$Chrname[$ni].gff3";
+	# open RSUTCA,">>cache.$Chrname[$ni].3.txt";
+	# open FASTARESULTCA,">>cache.$Chrname[$ni].u$upstreml.fa";
+	# open TCRSUTCA, ">>cache.$Chrname[$ni].5.txt";
+	# open TCFARESULTCA, ">>cache.$Chrname[$ni].5.fa";
+	# open OUTGFFCA, ">>cache.$Chrname[$ni].gff3";
+	# open DOWNFACA, ">>cache.$Chrname[$ni].down$downstreml.fa";
+
+	open RSUTCA,">cache.$Chrname[$ni].3.txt";
+	open FASTARESULTCA,">cache.$Chrname[$ni].u$upstreml.fa";
+	open TCRSUTCA, ">cache.$Chrname[$ni].5.txt";
+	open TCFARESULTCA, ">cache.$Chrname[$ni].5.fa";
+	open OUTGFFCA, ">cache.$Chrname[$ni].gff3";
+	open DOWNFACA, ">cache.$Chrname[$ni].down$downstreml.fa";
+	open OUTBEDCA, ">cache.$Chrname[$ni].bed"; 
+
 	say "Deal with $Chrname[$ni].";
 	$count1=0;
 	our $seqall = $Chrseq[$ni];
@@ -129,19 +198,12 @@ while ($seqall=~ /$testseq/igc){
 	our $l1=length ($1);
 	our $seqpos=pos($seqall)-5;
 	our $seqstarpos=$seqpos-$l1+16;
+	our $seqdownpos=$seqpos+$downstreml;
 	our $ChrID=$Chrname[$ni];
-#	say "$ChrID:$seqstarpos..$seqpos";
-#	say $l3;
-#	say "-----------------------------------------";
-
 	our $HID ="$ChrID"."H$count1";
 	#say $HID;
 	print RSUTCA ">$HID ";
 	print RSUTCA "$ChrID:$seqstarpos..$seqpos $l3 $2 $3 $4\n";
-#	print RSUT $l3," ";
-#	print RSUT $2," ";
-#	print RSUT $3," ";
-#	print RSUT $4,"\n";
 	print RSUTCA $1,"\n";
 #	print RSUT "-----------------------------------------\n";
 	say FASTARESULTCA ">$ChrID"."H$count1.up $ChrID:$seqstarpos..$seqpos";
@@ -151,7 +213,15 @@ while ($seqall=~ /$testseq/igc){
 	our $rightfinalseq = substr($seqall,$seqpos-$upstreml,$upstreml);
 	}
 	print FASTARESULTCA "$rightfinalseq\n";
+	
+	print DOWNFACA ">$ChrID"."H$count1.down $ChrID:$seqpos..$seqdownpos\n";
+	our $downfasta = substr($seqall,$seqpos,$downstreml);
+	print DOWNFACA "$downfasta\n";
+
 	print OUTGFFCA "$ChrID\tEAhelitron\tCDS\t$seqstarpos\t$seqpos\t.\t+\t.\tName=$HID.3;ID=$HID;Parent=$HID;Type=Helitron;Super_Family=Helitron\n";
+	
+	print OUTBEDCA "$ChrID\t".($seqstarpos-1)."\t".($seqpos)."\t$HID\t1\t+\n";
+
 	our $TCi=0;
 	#say our $TCseq='([atgcn]{10}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{15})';
 	our $rfsl=length($rightfinalseq);
@@ -222,7 +292,21 @@ while ($seqall=~ /$testseq/igc){
 	our $rightfinalseq = substr($seqall,$trseqpos-$upstreml,$upstreml);
 	}
 	say FASTARESULTCA $rightfinalseq;
+
+	if ($seqpos<$downstreml) {
+			print DOWNFA ">tr$ChrID"."H$count2.down $ChrID:$seqpos..1\n";
+		}else {
+			my $temppos=$seqpos-$downstreml;
+			print DOWNFACA ">tr$ChrID"."H$count2.down $ChrID:$seqpos..$temppos\n";
+		}
+		#print DOWNFA ">tr$ChrID"."H$count2.down $ChrID:$seqpos..$seqpos-$downstreml\n";
+		our $downfasta = substr($seqall,$trseqpos,$downstreml);
+		print DOWNFACA "$downfasta\n";
+
 	print OUTGFFCA "$ChrID\tEAhelitron\tCDS\t$seqpos\t$seqstarpos\t.\t-\t.\tName=$trHID.3;ID=$trHID;Parent=$trHID;Type=Helitron;Super_Family=Helitron\n";
+
+    print OUTBEDCA "$ChrID\t".($seqpos-1)."\t".($seqstarpos)."\t$trHID\t1\t-\n";
+
 
 	our $TCi=0;
 	#say our $TCseq='([atgcn]{10}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{15})';
@@ -255,36 +339,46 @@ while ($seqall=~ /$testseq/igc){
 	close TCRSUTCA;
 	close TCFARESULTCA;
 	close OUTGFFCA;
+	close DOWNFACA;
+	close OUTBEDCA;
 $pm->finish;	
 }
 
 $pm->wait_all_children;
 ###################Write the out_put files#############
-print "Writing to the Fninal output Files.\n";
+print "Writing to the final output files.\n";
 
 for (our $ni=0;$ni<$Chri;$ni++){
 	open RSUTCA,"cache.$Chrname[$ni].3.txt";
-	open FASTARESULTCA,"cache.$Chrname[$ni].u$upstreml.fas";
+	open FASTARESULTCA,"cache.$Chrname[$ni].u$upstreml.fa";
 	open TCRSUTCA, "cache.$Chrname[$ni].5.txt";
 	open TCFARESULTCA, "cache.$Chrname[$ni].5.fa";
 	open OUTGFFCA, "cache.$Chrname[$ni].gff3";	
+	open DOWNFACA, "cache.$Chrname[$ni].down$downstreml.fa";
+	open OUTBEDCA, "cache.$Chrname[$ni].bed";
 	
 print RSUT <RSUTCA>;
 print FASTARESULT <FASTARESULTCA>;
 print TCRSUT <TCRSUTCA>;
 print TCFARESULT <TCFARESULTCA>;
 print OUTGFF <OUTGFFCA>;
+print DOWNFA <DOWNFACA>;
+print OUTBED <OUTBEDCA>;
 	close RSUTCA;
 	close FASTARESULTCA;
 	close TCRSUTCA;
 	close TCFARESULTCA;
 	close OUTGFFCA;
-	
+	close DOWNFACA;
+	close OUTBEDCA;
 unlink "cache.$Chrname[$ni].3.txt";
-unlink "cache.$Chrname[$ni].u$upstreml.fas";
+unlink "cache.$Chrname[$ni].u$upstreml.fa";
 unlink "cache.$Chrname[$ni].5.txt";
 unlink "cache.$Chrname[$ni].5.fa";
 unlink "cache.$Chrname[$ni].gff3";
+unlink "cache.$Chrname[$ni].down$downstreml.fa";
+unlink "cache.$Chrname[$ni].bed";
+
 
 }
 ##################End Write files#############
@@ -293,6 +387,8 @@ close FASTARESULT;
 close TCRSUT;
 close TCFARESULT;
 close OUTGFF;
+close DOWNFA;
+close OUTBED;
 
 ######################################
 #End  main

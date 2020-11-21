@@ -2,7 +2,7 @@
 
 #AUTHORS
 # Kaining Hu (c) 2020
-# Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.4000 2020/09/25
+# Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5200 2020/11/21
 # hukaining@gmail.com
 
 use warnings;
@@ -48,7 +48,7 @@ or die("[-]Error in command line arguments
 	         4: CT[AG]{2}.{1}
 	         5: CTAG.{1}
 	         Default: 0]
-    Note: Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.4000 2020/09/25.\n");
+    Note: Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5200 2020/11/21.\n");
 
 if ($fuzzylv>5 or $fuzzylv<0) {
   die ("Please input fuzzy levle in int 0 to 5.\n");
@@ -124,25 +124,16 @@ say "$Chri Sequences";
 if ($MAX_processes>$Chri){
 	$MAX_processes=$Chri;
 }
-print "Finished loading!\n";
+print "Finished loading! ";
 printf "%g Sec %g Min\n",$loadingendtime-$loadingstarttime,($loadingendtime-$loadingstarttime)/60;
-# if ($opfn eq ""){
-# $opfn="EAHeli_out";
-# say "Output files:$opfn.fa $opfn.gff3";
-# }else{
-# say "Output files:$opfn.fa $opfn.gff3";
-# }
+print "Using $MAX_processes threads.\n";
 
-#open OUT ,">>Brapagenome.out.txt";
-#print OUT "@Chrname\n";
-#print OUT "@Chrseq\n"; 
-#close OUT;
 our $starttime=time();
 our $hairpinpattern="cccgccc";
 #say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
 say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
 say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
-say "Running. Please wait for minites.";
+say "Running. Please wait for a few minutes.";
 #####################################
 #Start main 
 #####################################
@@ -162,8 +153,15 @@ open TCFARESULT, "> $opfn.5.fa" or die ("[-] Error: Can't open or create $opfn.5
 open OUTGFF, "> $opfn.gff3" or die ("[-] Error: Can't open or create $opfn.gff3\n");
 print OUTGFF "##gff-version 3\n";
 open DOWNFA,"> $opfn.down$downstreml.fa" or die ("[-] Error: Can't open or create $opfn.down$downstreml.fa\n");
+open GENOMELENH,"> $opfn.len.txt" or die ("[-] Error: Can't open or create $opfn.len.txt\n");
+print GENOMELENH "Seqname\tSeqLength\t[+]\t[-]\tall\t[+]Helitron Density\t[-]Helitron Density\tSeq Helitron Density\n";
 open OUTBED, "> $opfn.bed" or die ("[-] Error: Can't open or create $opfn.bed\n");
-our $count1=0;
+our $genomel =0; 
+our $countall=0;
+our $count1all=0;
+our $count2all=0;
+our @count1=();
+our @count2=();
 
 our $pm=Parallel::ForkManager->new($MAX_processes);
 for (our $ni=0;$ni<$Chri;$ni++){
@@ -182,9 +180,12 @@ for (our $ni=0;$ni<$Chri;$ni++){
 	open OUTGFFCA, ">cache.$Chrname[$ni].gff3";
 	open DOWNFACA, ">cache.$Chrname[$ni].down$downstreml.fa";
 	open OUTBEDCA, ">cache.$Chrname[$ni].bed"; 
+	open GENOMELENHCA, ">cache.$Chrname[$ni].len.txt"; 
+	
 
 	say "Deal with $Chrname[$ni].";
 	$count1=0;
+	$count1[$ni]=0;
 	our $seqall = $Chrseq[$ni];
 ################Start deal with plus seqs.################
 
@@ -193,7 +194,8 @@ while ($seqall=~ /$testseq/igc){
 	
 	#say $seqfilename;
 	#say "Chrom:",$AN;
-	 $count1++;
+	$count1++;
+	$count1[$ni]++;
 	our $l3=length ($3);
 	our $l1=length ($1);
 	our $seqpos=pos($seqall)-5;
@@ -250,13 +252,16 @@ while ($seqall=~ /$testseq/igc){
 
 ################Start TR-seqs#############################
 	 $seqall = TRseq($seqall);
-	our $count2=0;
+	 $count2=0;
+	 $count2[$ni]=0;
 	our $seqalll = length($seqall);
+	 $genomel += $seqalll;
 while ($seqall=~ /$testseq/igc){
 #while ($seqall =~ /$testseq/igc){
 	#say $seqfilename;
 	#say "Chrom:",$AN;
 	$count2++;
+	$count2[$ni]++;
 	
 	 
 	#say "No.",$count2;
@@ -329,11 +334,18 @@ while ($seqall=~ /$testseq/igc){
 	
 		}	
 ################ TR-seqs End#############################
+print GENOMELENHCA "$Chrname[$ni]\t$seqalll\t$count1[$ni]\t$count2[$ni]\t".($count1[$ni] + $count2[$ni])."\t".($count1[$ni]/$seqalll)*1e6."\t".($count2[$ni]/$seqalll)*1e6."\t".($count1[$ni]+$count2[$ni])/$seqalll*1e6."\n";
+# print "$Chrname[$ni]\t$seqalll\t$count1[$ni]\t$count2[$ni]\t".($count1[$ni] + $count2[$ni])."\t".($count1[$ni]/$seqalll)*1e6."\t".($count2[$ni]/$seqalll)*1e6."\t".($count1[$ni]+$count2[$ni])/$seqalll*1e6."\n";
+	# $countall = $countall + $count1[$ni] + $count2[$ni];
+	# #$genomel += $seqalll;
+	# $count1all += $count1[$ni];
+	# $count2all += $count2[$ni];
 #	close RUST$ni,">>cache.$Chrname[$ni].3.txt";
 #	close FASTARESULT$ni,">> cache.$Chrname[$ni].u$upstreml.fas";
 #	close TCRSUT$ni, ">>cache.$Chrname[$ni].5.txt";
 #	close TCFARESULT$ni, ">>cache.$Chrname[$ni].5.fa";
 #	close OUTGFF$ni, ">> cache.$Chrname[$ni].gff3";
+
 	close RSUTCA;
 	close FASTARESULTCA;
 	close TCRSUTCA;
@@ -341,6 +353,7 @@ while ($seqall=~ /$testseq/igc){
 	close OUTGFFCA;
 	close DOWNFACA;
 	close OUTBEDCA;
+	close GENOMELENHCA;
 $pm->finish;	
 }
 
@@ -356,7 +369,9 @@ for (our $ni=0;$ni<$Chri;$ni++){
 	open OUTGFFCA, "cache.$Chrname[$ni].gff3";	
 	open DOWNFACA, "cache.$Chrname[$ni].down$downstreml.fa";
 	open OUTBEDCA, "cache.$Chrname[$ni].bed";
+	open GENOMELENHCA, "cache.$Chrname[$ni].len.txt"; 
 	
+
 print RSUT <RSUTCA>;
 print FASTARESULT <FASTARESULTCA>;
 print TCRSUT <TCRSUTCA>;
@@ -364,6 +379,17 @@ print TCFARESULT <TCFARESULTCA>;
 print OUTGFF <OUTGFFCA>;
 print DOWNFA <DOWNFACA>;
 print OUTBED <OUTBEDCA>;
+# print GENOMELENH <GENOMELENHCA>;
+while (our $lentemp=<GENOMELENHCA>){
+	print $lentemp;
+	print GENOMELENH $lentemp;
+	my @lencount=split('\t',$lentemp);
+	$genomel += $lencount[1];
+	$count1all += $lencount[2];
+	$count2all += $lencount[3];
+	$countall += $lencount[4];
+}
+
 	close RSUTCA;
 	close FASTARESULTCA;
 	close TCRSUTCA;
@@ -371,6 +397,8 @@ print OUTBED <OUTBEDCA>;
 	close OUTGFFCA;
 	close DOWNFACA;
 	close OUTBEDCA;
+	close GENOMELENHCA;
+
 unlink "cache.$Chrname[$ni].3.txt";
 unlink "cache.$Chrname[$ni].u$upstreml.fa";
 unlink "cache.$Chrname[$ni].5.txt";
@@ -378,6 +406,7 @@ unlink "cache.$Chrname[$ni].5.fa";
 unlink "cache.$Chrname[$ni].gff3";
 unlink "cache.$Chrname[$ni].down$downstreml.fa";
 unlink "cache.$Chrname[$ni].bed";
+unlink "cache.$Chrname[$ni].len.txt";
 
 
 }
@@ -389,6 +418,9 @@ close TCFARESULT;
 close OUTGFF;
 close DOWNFA;
 close OUTBED;
+	# say "$genomel $count1all $count2all $countall";
+	print GENOMELENH "Whole_genome\t$genomel\t$count1all\t$count2all\t$countall\t".$count1all/$genomel*1e6."\t".$count2all/$genomel*1e6."\t".$countall/$genomel*1e6."\n";
+close GENOMELENH;
 
 ######################################
 #End  main

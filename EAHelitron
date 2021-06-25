@@ -21,6 +21,8 @@ our $upstreml=3000;
 our $downstreml=500;
 our $fuzzylv=0;
 our $finalCTAGT="ctagt";
+our $hairpinpattern="[gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5}";
+our $TCpattern="TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG)";
 our @CTAGT=qw/
            CTAGT
           CT[AG]GT
@@ -33,13 +35,16 @@ our @CTAGT=qw/
 #our $seqfilename ='';
 #GetOptions("i=s"=>\$seqfilename,"o=s" => \$opfn,"verbose"=>\$verbose)
 #or die("Error in command line arguments\n perl Searchhelitron -o <outputfile> (inputfile)\n");
-GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"d=i"=>\$downstreml, "r=i"=>\$fuzzylv)
+GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"d=i"=>\$downstreml, "r=i"=>\$fuzzylv,"T=s" => \$TCpattern,"H=s" => \$hairpinpattern)
 or die("[-]Error in command line arguments
   Usage: perl EAHelitron [options] <input FASTA file>
     options:
 	 [-o string|output prefix Default: EAHeli_out]
 	 [-u int|upstream length Default: 3000]
 	 [-d int|downstream length Default: 500]
+	 Advanced options:
+	 [-T string|TC pattern. User's 5'TC pattern]
+	 [-H string|Hairpin pattern. User's Hairpin left pattern]
 	 [-r int[0-5]|CTRRt 3' terminal fuzzy level; 
 	         0: CTAGT
 	         1: CT[AG]GT
@@ -48,7 +53,7 @@ or die("[-]Error in command line arguments
 	         4: CT[AG]{2}.{1}
 	         5: CTAG.{1}
 	         Default: 0]
-    Note: Easy to Annotate Helitrons command line (EAHelitron)v1.5200 2020/09/25.\n");
+    Note: Easy to Annotate Helitrons command line (EAHelitron)v1.5300 2021/06/25.\n");
 
 ###################sub TRseq##########
 #say $fuzzylv;
@@ -63,6 +68,8 @@ if ($fuzzylv>5 or $fuzzylv<0) {
 #say $fuzzylv;
 $finalCTAGT = $CTAGT[$fuzzylv];
 print "CTAGT fuzzy level: $fuzzylv $finalCTAGT\n";
+print "TCpattern: $TCpattern\n";
+print "hairpin left sequence pattern: $hairpinpattern\n";
 print "upstream length: $upstreml\n";
 print "downstream length: $downstreml \n";
 # print "CTAGT fuzzy level: $fuzzylv $finalCTAGT\n";
@@ -124,10 +131,13 @@ printf "%g Sec %g Min\n",$loadingendtime-$loadingstarttime,($loadingendtime-$loa
 
 
 our $starttime=time();
-our $hairpinpattern="cccgccc";
+#our $hairpinpattern="cccgccc";
+#our $hairpinpattern="[gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5}";
 #say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
-say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
-say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
+#say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
+say our $testseq='([atcg]{10}('."$hairpinpattern".')([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
+#say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
+say our $TCseq='([atgcn]{5}('."$TCpattern".')[atgcn]{20})';
 print "\nRunning. Please wait for a few minutes.\n";
 #####################################
 #Start main 
@@ -167,20 +177,15 @@ for (our $ni=0;$ni<$Chri;$ni++){
 
 		our $HID ="$ChrID"."H$count1";
 		#say $HID;
-		print RSUT  ">$HID"," ";
-		print RSUT "$ChrID:$seqstarpos..",$seqpos," ";
-		print RSUT $l3," ";
-		print RSUT $2," ";
-		print RSUT $3," ";
-		print RSUT $4,"\n";
-		print RSUT $1,"\n";
-	#	print RSUT "-----------------------------------------\n";
+		print RSUT ">$HID $ChrID:$seqstarpos..$seqpos $l3 $2 $3 $4\n";
+		print RSUT "$1\n";
+
 		print FASTARESULT ">$ChrID"."H$count1.up $ChrID:$seqstarpos..$seqpos\n";
 		our $rightfinalseq="";
 		if ($seqpos<$upstreml){
-		$rightfinalseq = substr($seqall,1,$seqpos);
+			$rightfinalseq = substr($seqall,1,$seqpos);
 		}else{
-		$rightfinalseq = substr($seqall,$seqpos-$upstreml,$upstreml);
+			$rightfinalseq = substr($seqall,$seqpos-$upstreml,$upstreml);
 		}
 		print FASTARESULT "$rightfinalseq\n";
 		
@@ -232,21 +237,17 @@ for (our $ni=0;$ni<$Chri;$ni++){
 
 		our $trHID ="tr$ChrID"."H$count2";
 		#say $trHID;
-		print RSUT  ">tr$ChrID","H",$count2," ";
-		print RSUT "$ChrID:$seqstarpos..",$seqpos," ";
-		print RSUT $l3," ";
-		print RSUT $2," ";
-		print RSUT $3," ";
-		print RSUT $4,"\n";
-		print RSUT $1,"\n";
+		print RSUT ">tr$ChrID"."H"."$count2 ";
+		print RSUT "$ChrID:$seqstarpos..$seqpos $l3 $2 $3 $4\n";
+		print RSUT "$1\n";
 	#	print RSUT "-----------------------------------------\n";
 		print FASTARESULT ">tr$ChrID"."H$count2.up $ChrID:$seqstarpos..$seqpos\n";
 		our $trseqpos = pos($seqall)-5;
 		our $rightfinalseq="";
 		if($trseqpos<$upstreml){
-		$rightfinalseq = substr($seqall,1,$trseqpos);
+			$rightfinalseq = substr($seqall,1,$trseqpos);
 		}else{
-		$rightfinalseq = substr($seqall,$trseqpos-$upstreml,$upstreml);
+			$rightfinalseq = substr($seqall,$trseqpos-$upstreml,$upstreml);
 		}
 		print FASTARESULT "$rightfinalseq\n";
 		if ($seqpos<$downstreml) {
@@ -261,7 +262,7 @@ for (our $ni=0;$ni<$Chri;$ni++){
 		
 		
 		print OUTGFF "$ChrID\tEAhelitron\tCDS\t$seqpos\t$seqstarpos\t.\t-\t.\tName=$trHID.3;ID=$trHID;Parent=$trHID;Type=Helitron;Super_Family=Helitron\n";
-    print OUTBED "$ChrID\t".($seqpos-1)."\t".($seqstarpos)."\t$trHID\t1\t-\n";
+    	print OUTBED "$ChrID\t".($seqpos-1)."\t".($seqstarpos)."\t$trHID\t1\t-\n";
 		our $TCi=0;
 		#say our $TCseq='([atgcn]{10}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{15})';
 		our $rfsl=length($rightfinalseq);

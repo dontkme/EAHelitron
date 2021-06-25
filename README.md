@@ -76,11 +76,11 @@ We also provide EAHelitron_P a Multi-Threading version to speed up the running w
 ```
 perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
 ```
--p: how many threads you want to use. Suggest not greater than the sequenced numbers your input fasta file contained.
+-p: how many threads to use. Suggest not greater than the sequenced numbers your input fasta file contained.
 
 Advanced options. Users could input patterns to predict Helitrons.
 
-Use haipin left sequnce pattern:
+Use hairpin left sequnce pattern:
 ```
 perl EAHeliton_P –p 8 -H "GC" –o testEAHout_H_GC teat.fas
 ```

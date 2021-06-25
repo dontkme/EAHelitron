@@ -21,6 +21,8 @@ our $upstreml=3000;
 our $downstreml=500;
 our $fuzzylv=0;
 our $finalCTAGT="ctagt";
+our $hairpinpattern="[gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5}";
+our $TCpattern="TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG)";
 our @CTAGT=qw/
            CTAGT
           CT[AG]GT
@@ -32,7 +34,7 @@ our @CTAGT=qw/
 #our $seqfilename ='';
 #GetOptions("i=s"=>\$seqfilename,"o=s" => \$opfn,"verbose"=>\$verbose)
 #or die("Error in command line arguments\n perl Searchhelitron -o <outputfile> (inputfile)\n");
-GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"p=i"=>\$MAX_processes,"d=i"=>\$downstreml,"r=i"=>\$fuzzylv)
+GetOptions("o=s" => \$opfn,"verbose"=>\$verbose,"u=i"=>\$upstreml,"p=i"=>\$MAX_processes,"d=i"=>\$downstreml,"r=i"=>\$fuzzylv, "T=s" => \$TCpattern,"H=s" => \$hairpinpattern)
 or die("[-]Error in command line arguments
   Usage: perl EAHelitron_P [options] <input FASTA file>
     options:
@@ -40,6 +42,9 @@ or die("[-]Error in command line arguments
 	 [-u int|upstream length Default: 3000]
 	 [-d int|downstream length Default: 500]
 	 [-p int |threads number Default: 1]
+	 Advanced options:
+	 [-T string|TC pattern. User's 5'TC pattern]
+	 [-H string|Hairpin pattern. User's Hairpin left pattern]
 	 [-r int[0-5]|CTRRt 3' terminal fuzzy level; 
 	         0: CTAGT
 	         1: CT[AG]GT
@@ -48,7 +53,7 @@ or die("[-]Error in command line arguments
 	         4: CT[AG]{2}.{1}
 	         5: CTAG.{1}
 	         Default: 0]
-    Note: Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5200 2020/11/21.\n");
+    Note: Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5300 2021/06/25.\n");
 
 if ($fuzzylv>5 or $fuzzylv<0) {
   die ("Please input fuzzy levle in int 0 to 5.\n");
@@ -56,13 +61,15 @@ if ($fuzzylv>5 or $fuzzylv<0) {
 #say $fuzzylv;
 $finalCTAGT = $CTAGT[$fuzzylv];
 print "CTAGT fuzzy level: $fuzzylv $finalCTAGT\n";
+print "TCpattern: $TCpattern\n";
+print "hairpin left sequence pattern: $hairpinpattern\n";
 print "upstream length: $upstreml\n";
 print "downstream length: $downstreml \n";
 # print "CTAGT fuzzy level: $fuzzylv $finalCTAGT\n";
 if ($opfn eq ""){
 	$opfn="EAHeli_out";
 	print "output prefix:$opfn\n";
-	}else{
+}else{
 	print "output prefix:$opfn\n";
 }
 
@@ -129,10 +136,12 @@ printf "%g Sec %g Min\n",$loadingendtime-$loadingstarttime,($loadingendtime-$loa
 print "Using $MAX_processes threads.\n";
 
 our $starttime=time();
-our $hairpinpattern="cccgccc";
+#our $hairpinpattern="cccgccc";
 #say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}ctagt)[atcgn]{4})';
-say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
-say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
+#say our $testseq='([atcg]{10}([gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5})([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
+say our $testseq='([atcg]{10}('."$hairpinpattern".')([atcg]{0,4}[at]{1}[atgc]{0,4})(??{TRseq($2)})([atcg]{3,12}'."$finalCTAGT".')[atcgn]{4})';
+#say our $TCseq='([atgcn]{5}(TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG))[atgcn]{20})';
+say our $TCseq='([atgcn]{5}('."$TCpattern".')[atgcn]{20})';
 say "Running. Please wait for a few minutes.";
 #####################################
 #Start main 

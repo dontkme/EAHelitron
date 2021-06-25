@@ -1,7 +1,7 @@
 # EAHelitron    
 <img src="https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png"  align="right" />
 
-[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.2-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2020--09--25-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.3-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2021--06--25-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
 
 Easy to Annotate Helitrons Unix-like command line.              
 
@@ -57,6 +57,9 @@ Options:
          [-o string|outprefix Default: EAHeli_out]
          [-u int|upstream length Default: 3000]
          [-d int|downstream length Default: 500]
+         Advanced options:
+	 [-T string|TC pattern. User's 5'TC pattern]
+	 [-H string|Hairpin pattern. User's Hairpin left pattern]
          [-r int[0-5]|CTRRt 3' terminal fuzzy level;
                  0: CTAGT
                  1: CT[AG]GT
@@ -74,6 +77,23 @@ We also provide EAHelitron_P a Multi-Threading version to speed up the running w
 perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
 ```
 -p: how many threads you want to use. Suggest not greater than the sequenced numbers your input fasta file contained.
+
+Advanced options. Users could input patterns to predict Helitrons.
+
+Use haipin left sequnce pattern:
+```
+perl EAHeliton_P –p 8 -H "GC" –o testEAHout_H_GC teat.fas
+```
+
+Use TC pattern:
+```
+perl EAHeliton_P –p 8 -T "TC" –o testEAHout_T_TC teat.fas
+```
+
+Or combined using:
+```
+perl EAHeliton_P –p 8 -T "TC" -H "GC" –o testEAHout_T_H teat.fas
+```
 
 The outputs named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000.fas. (EAHout could be the prefix you set by –o option, 20000 could be your –u option value). 
 
@@ -94,6 +114,8 @@ The outputs named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000
 *.len.txt: Summary of genome sequences length, Helitron counts and Helitron Densities
 
 ## History
+
+(EAHelitron)v1.5300 2021/06/25 Add feature. User TC pattern and hairpin left seuqence pattern options.
 
 (EAHelitron)v1.5200 2020/09/25 Use new regular expression, which based on BioPerl, to get chromosome names, in order to adapt to more cases. Thanks to [Darcy Jones](https://github.com/darcyabjones)'s advice.
 

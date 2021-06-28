@@ -5,9 +5,9 @@
 
 Easy to Annotate Helitrons Unix-like command line.              
 
-EAHelitron is written by Perl. Used the helitron conversed structure traits: 5’ terminal with TC, 3’ terminal with CTAGt and before CTAG 2-10 nt has an GC-rich hairpin loop. We used the Perl regular expression engine and its Embedded-Code Construct to find out all matched results, then print and convert to a GFF3 format file. Using the gff3 file made above, we can visual these helitrons in IGV, Gbrowse, Jbrowse and other kind of genome visualization tools, and character the captured genes easily.
+EAHelitron is written by Perl. Used the Helitron conversed structure traits: 5’ terminal with TC, 3’ terminal with CTAGt and before CTAG 2-10 nt has an GC-rich hairpin loop. We used the Perl regular expression(RE) engine and its Embedded-Code Construct to find out all matched results, then print and convert to a GFF3 format file. Using the gff3 file made above, we can visual these Helitrons in IGV, Gbrowse, Jbrowse and other kind of genome visualization tools, and character the captured genes easily.
 
-EAHelitron is an unix-like program you can run it in all Perl5.10+ supported machines and write the command in your shell script. Linux and Windows test passed.
+EAHelitron is an unix-like program you can run it in all Perl 5.10+ supported machines and write the command in your shell script. Linux, Mac OS and Windows test passed.
 
 ## Getting Started
 
@@ -20,7 +20,7 @@ Type these word into your system terminal.
 ```
 perl -v
 ```
-If has the Perl version information, we download all EAHelitron files. https://github.com/dontkme/EAHelitron/archive/master.zip
+If the terminal displays Perl version information, then we can download all EAHelitron files. https://github.com/dontkme/EAHelitron/archive/master.zip
 
 
 ### Installing
@@ -32,18 +32,18 @@ Unzip the EAHelitron-master.zip
 unzip EAHelitron-master.zip
 ```
 
-And enter the unzipped folder, run EAHelitron.
+And enter the decompressed folder, run EAHelitron.
 
 ```
 cd EAHelitron-master
 perl EAHelitron -h
 ```
 
-If the screen shows the help information. It woked.
+If the screen displays help information. It worked.
 
 ## Running 
 
-Explain how to run the EAHelitron for this system
+Predict Helitrons and search for their 5' TC terminals within 20,000 bp upstream.
 ```
 perl EAHeliton –o testEAHout –u 20000 teat.fas
 ```
@@ -58,8 +58,8 @@ Options:
          [-u int|upstream length Default: 3000]
          [-d int|downstream length Default: 500]
          Advanced options:
-	 [-T string|TC pattern. User's 5'TC pattern]
-	 [-H string|Hairpin pattern. User's Hairpin left pattern]
+         [-T string|TC pattern. User's 5'TC pattern]
+         [-H string|Hairpin pattern. User's Hairpin left pattern]
          [-r int[0-5]|CTRRt 3' terminal fuzzy level;
                  0: CTAGT
                  1: CT[AG]GT
@@ -69,39 +69,46 @@ Options:
                  5: CTAG.{1}
                  Default: 0]
 
-We also provide EAHelitron_P a Multi-Threading version to speed up the running with big genome. 
+We also provide EAHelitron_P, a multi-threaded version that can speed up running in a large genome.
 
 (Need Perl Parallel::ForkManager. You could install it by command: cpan Parallel::ForkManager )
 
 ```
 perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
 ```
--p: how many threads to use. Suggest not greater than the sequenced numbers your input fasta file contained.
+-p: How many threads to use. It is recommended not to exceed the number of sequences contained in the fasta file you input.
 
-Advanced options. Users could input patterns to predict Helitrons.
+Advanced options. Users can enter their own pattern (Perl RE) to predict Helitrons.
+(Warning: Advanced options may significantly increase the false positive rate, only for exploration).
 
-Use hairpin left sequnce pattern:
+-H: Use Hairpin left sequnce pattern:
 ```
 perl EAHeliton_P –p 8 -H "GC" –o testEAHout_H_GC teat.fas
 ```
 
-Use TC pattern:
+-T: Use TC pattern:
 ```
 perl EAHeliton_P –p 8 -T "TC" –o testEAHout_T_TC teat.fas
 ```
 
-Or combined using:
+Or use in combination:
 ```
 perl EAHeliton_P –p 8 -T "TC" -H "GC" –o testEAHout_T_H teat.fas
 ```
+-r: CTRRt 3' terminal fuzzy level:
+6 fuzzy levels of CTRRt terminal [0-5]
 
-The outputs named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000.fas. (EAHout could be the prefix you set by –o option, 20000 could be your –u option value). 
+```
+perl EAHeliton_P –p 8 -r 3 –o testEAHout_r3 teat.fas
+```
 
-*.3.txt: All 3’ terminal sequences with a 10nt left flank and a 4nt right flank in fasta format. All sequences named by its local chromosome name, a 'H' means Helitron, '.3' suffix to mark they are 3’ terminal sequences. The minus strain terminal have a 'tr' prefix. (e.g. Chr1H10.3, trChr5H40.3).
+The outputs named EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000.fas. (prefix 'EAHout' could be set by –o option, 20000 is your –u option value). 
 
-*.5.txt: All 5’terminal sequences which were matched in 3’ terminal’s upstream sequences with a 5 nt left flank and a 20 nt right flank. The name of sequences have .5.1 suffix to mark they are 5’ terminal and the match orders numbers. (e.g. Chr1H10.5.1,trChr5H40.5.2) 
+*.3.txt: All 3’ terminal sequences with a 10nt left flank and a 4nt right flank in fasta format. All sequences named by its local chromosome name, a 'H' means Helitron, '.3' suffix to mark they are 3’ terminals. The minus strain terminal have a 'tr' prefix. (e.g. Chr1H10.3, trChr5H40.3).
 
-*.5.fa: Possible full-length Helitron sequences which start with 5’ terminal and end with 3’ terminal.
+*.5.txt: All 5’terminal sequences which were matched in the 3’ terminal’s upstream sequences, with a 5 nt left flank and a 20 nt right flank. The name of sequences have .5.1 suffix to mark they are 5’ terminal and the match orders numbers. (e.g. Chr1H10.5.1,trChr5H40.5.2) 
+
+*.5.fa: Possible full-length Helitron sequences which start with 5’ terminal and end with 3’ terminal. (Only for Helitrons)
 
 *.u*.fas: All 3’ terminal upstream sequences.  
 

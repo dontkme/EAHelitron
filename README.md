@@ -5,9 +5,9 @@
 
 Easy to Annotate Helitrons Unix-like command line.              
 
-EAHelitron is written by Perl. Used the Helitron conversed structure traits: 5’ terminal with TC, 3’ terminal with CTAGt and before CTAG 2-10 nt has an GC-rich hairpin loop. We used the Perl regular expression(RE) engine and its Embedded-Code Construct to find out all matched results, then print and convert to a GFF3 format file. Using the gff3 file made above, we can visual these Helitrons in IGV, Gbrowse, Jbrowse and other kind of genome visualization tools, and character the captured genes easily.
+EAHelitron is written by Perl. Use the Helitron conservative structure traits: 5’ terminal with TC, 3’ terminal with CTAGt and before CTAG 2-10 nt has an GC-rich hairpin loop. We use the Perl regular expression(RE) engine and its Embedded-Code Construct to find out all matched results, then print and convert to a GFF3 format file. Using the gff3 file made above, we can visualize these Helitrons in genome visualization tools such as IGV, Gbrowse, and Jbrowse, and easily characterize the captured genes.
 
-EAHelitron is an unix-like program you can run it in all Perl 5.10+ supported machines and write the command in your shell script. Linux, Mac OS and Windows test passed.
+EAHelitron is an unix-like program, you can run it on all Perl 5.10+ supported machines and write the command in your shell script. Linux, Mac OS and Windows test passed.
 
 ## Getting Started
 
@@ -15,8 +15,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-Make sure your system has Perl.
-Type these word into your system terminal.
+Make sure you have Perl on your system.
+Enter these words in your system terminal.
 ```
 perl -v
 ```
@@ -43,7 +43,7 @@ If the screen displays help information. It worked.
 
 ## Running 
 
-Predict Helitrons and search for their 5' TC terminals within 20,000 bp upstream.
+Example: Predict Helitrons and search for their 5' TC terminals within 20,000 bp upstream.
 ```
 perl EAHeliton –o testEAHout –u 20000 teat.fas
 ```

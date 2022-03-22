@@ -38,13 +38,13 @@ Just unzip the zip file.
 
 
 ```
-unzip EAHelitron-1.5.3.zip
+unzip EAHelitron-master.zip
 ```
 
 And go to the extracted folder and run EAHelitron.
 
 ```
-cd EAHelitron-1.5.3
+cd EAHelitron-master
 perl EAHelitron -h
 ```
 
@@ -88,6 +88,8 @@ We also provide **EAHelitron_P**, a multi-threaded version that can speed up run
 perl EAHelitron_P –p 8 –o testEAHout –u 20000 teat.fas
 ```
 **-p**: How many threads to use. It is recommended not to exceed the number of sequences contained in the fasta file you input.
+
+---
 
 #### **Advanced options:** 
 Users can enter their own patterns (Perl RE) to predict Helitrons.
@@ -133,6 +135,8 @@ perl EAHeliton_P –p 8 -H "[GC]{1}[AT]{1}[GC]{5}|[GC]{6}" -T "TC|TCT.TACTA.T" �
 ```
 perl EAHelitron_P –p 8 -r 3 –o testEAHout_r3 teat.fas
 ```
+---
+
 ### Outputs:
 The outputs are named like **EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000.fas.** (The prefix 'EAHout' can be set with the -o option, 20000 is the value of your -u option)
 

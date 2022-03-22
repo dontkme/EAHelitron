@@ -6,13 +6,13 @@
 
 Easy-to-Annotate Helitrons Unix-like Command-Line.              
 
-<<<<<<< HEAD
+
 `EAHelitron` is written in Perl. Used the *Helitron* conservative structure traits: 5’ terminal with TC, 3’ terminal with CTAGt, and before CTAG 2-10 nt has a GC-rich hairpin loop. We used the Perl regular expression(RE) engine and its Embedded-Code Construct to find all the matches and then printed and converted them to a GFF3 format file. Using the above GFF3 file, we can visualize these *Helitrons* in genome visualization tools such as IGV, Gbrowse, and Jbrowse, and easily characterize the captured genes.
 
 EAHelitron is a Unix-like program that you can run it on all Perl 5.10+ supported machines, and write commands in your shell scripts or through pipes. Linux, Mac OS, and Windows tests passed.
 
 
----
+
 
 
 ## Getting Started

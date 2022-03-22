@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 
 #AUTHORS
-# Kaining Hu (c) 2020
-# Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5200 2020/11/21
+# Kaining Hu (c) 2021
+# Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5300 2021/06/25
 # hukaining@gmail.com
 
 use warnings;

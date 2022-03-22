@@ -1,20 +1,15 @@
 # EAHelitron    
 <img src="https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png"  align="right" />
 
-[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.3-green.svg?style=flat)](https://github.com/dontkme/EAHelitron) [![Last-changedate](https://img.shields.io/badge/last%20change-2021--06--25-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.3-green.svg?style=flat)](https://github.com/dontkme/EAHelitron/releases) [![Last-changedate](https://img.shields.io/badge/last%20change-2021--06--25-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+
 
 Easy-to-Annotate Helitrons Unix-like Command-Line.              
 
-`EAHelitron` is written in Perl. Used the *Helitron* conservative structure traits: 5’ terminal with TC, 3’ terminal with CTAGt, and before CTAG 2-10 nt has a GC-rich hairpin loop. We used the Perl regular expression(RE) engine and its Embedded-Code Construct to find all the matches and then printed and converted them to a GFF3 format file. Using the above GFF3 file, we can visualize these *Helitrons* in IGV, Gbrowse, Jbrowse, or other types of genome visualization tools and easily characterize the captured genes.
+<<<<<<< HEAD
+`EAHelitron` is written in Perl. Used the *Helitron* conservative structure traits: 5’ terminal with TC, 3’ terminal with CTAGt, and before CTAG 2-10 nt has a GC-rich hairpin loop. We used the Perl regular expression(RE) engine and its Embedded-Code Construct to find all the matches and then printed and converted them to a GFF3 format file. Using the above GFF3 file, we can visualize these *Helitrons* in genome visualization tools such as IGV, Gbrowse, and Jbrowse, and easily characterize the captured genes.
 
-EAHelitron is a Unix-like program that you can run on all machines that support Perl 5.10 and above, and write commands in your shell scripts or through pipes. Linux, Mac OS, and Windows tests passed.
-
-
-
-
-
-
-
+EAHelitron is a Unix-like program that you can run it on all Perl 5.10+ supported machines, and write commands in your shell scripts or through pipes. Linux, Mac OS, and Windows tests passed.
 
 
 ---
@@ -27,6 +22,7 @@ EAHelitron is a Unix-like program that you can run on all machines that support 
 ### Prerequisites
 
 Make sure you have Perl on your system.
+<<<<<<< HEAD
 Type these words in your system terminal.
 ```
 perl -v
@@ -34,18 +30,21 @@ perl -v
 If the terminal shows the Perl version information, then we can download the EAHelitron files. https://github.com/dontkme/EAHelitron/archive/master.zip
 
 
+
 ### Installing
+
 
 Just unzip the zip file.
 
+
 ```
-unzip EAHelitron-master.zip
+unzip EAHelitron-1.5.3.zip
 ```
 
 And go to the extracted folder and run EAHelitron.
 
 ```
-cd EAHelitron-master
+cd EAHelitron-1.5.3
 perl EAHelitron -h
 ```
 
@@ -53,14 +52,16 @@ If the screen displays help and version information. It works.
 
 ### Running 
 
+
 Example: Predict Helitrons and search for their 5'TC terminals in the upstream 20,000bp range.
+
 ```
-perl EAHeliton –o testEAHout –u 20000 teat.fas
+perl EAHelitron –o testEAHout –u 20000 teat.fas
 ```
-OR 
+Or 
 
 ```  
-./EAHeliton –o testEAHout –u 20000 teat.fas
+./EAHelitron –o testEAHout –u 20000 teat.fas
 ```   
 #### Options:
         
@@ -84,7 +85,7 @@ We also provide **EAHelitron_P**, a multi-threaded version that can speed up run
 (**Need Perl Parallel::ForkManager.** You could install it by command: cpan Parallel::ForkManager )
 
 ```
-perl EAHeliton_P –p 8 –o testEAHout –u 20000 teat.fas
+perl EAHelitron_P –p 8 –o testEAHout –u 20000 teat.fas
 ```
 **-p**: How many threads to use. It is recommended not to exceed the number of sequences contained in the fasta file you input.
 
@@ -98,7 +99,7 @@ Users can enter their own patterns (Perl RE) to predict Helitrons.
 Example:
 1. Only use GC as hairpin left sequence pattern:
 ```
-perl EAHeliton_P –p 8 -H "GC" –o testEAHout_H_GC teat.fas
+perl EAHelitron_P –p 8 -H "GC" –o testEAHout_H_GC teat.fas
 ```
 2. or Use 1 **GC**(G or C) 1 **AT**(A or T) and 5 **GC** or(**|**) 6 **GC** as haripin left sequence pattern:
 ```
@@ -111,7 +112,7 @@ Example:
 
 1. Only use 'TC' as 5' TC sequence RE pattern:
 ```
-perl EAHeliton_P –p 8 -T "TC" –o testEAHout_T_TC teat.fas
+perl EAHelitron_P –p 8 -T "TC" –o testEAHout_T_TC teat.fas
 ```
 2. Use TC or(**|**) TCT.TACTA.T as 5' TC sequence RE pattern (The dot '.' to indicate any character, we can use [ATCGN] instead of '.', if you like):
 ```
@@ -120,7 +121,7 @@ perl EAHeliton_P –p 8 -T "TC|TCT.TACTA.T" –o testEAHout_T teat.fas
 
 We can also use them in combination:
 ```
-perl EAHeliton_P –p 8 -T "TC" -H "GC" –o testEAHout_T_H teat.fas
+perl EAHelitron_P –p 8 -T "TC" -H "GC" –o testEAHout_T_H teat.fas
 ```
 Or more complex:
 ```
@@ -130,7 +131,7 @@ perl EAHeliton_P –p 8 -H "[GC]{1}[AT]{1}[GC]{5}|[GC]{6}" -T "TC|TCT.TACTA.T" �
 6 fuzzy levels of CTRRt terminal [0-5]
 
 ```
-perl EAHeliton_P –p 8 -r 3 –o testEAHout_r3 teat.fas
+perl EAHelitron_P –p 8 -r 3 –o testEAHout_r3 teat.fas
 ```
 ### Outputs:
 The outputs are named like **EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 EAout.u20000.fas.** (The prefix 'EAHout' can be set with the -o option, 20000 is the value of your -u option)

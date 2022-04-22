@@ -22,8 +22,7 @@ EAHelitron is a Unix-like program that you can run it on all Perl 5.10+ supporte
 ### Prerequisites
 
 Make sure you have Perl on your system.
-<<<<<<< HEAD
-Type these words in your system terminal.
+Type these words into your system's terminal.
 ```
 perl -v
 ```
@@ -52,6 +51,7 @@ If the screen displays help and version information. It works.
 
 ### Running 
 
+**Basic mode：**
 
 Example: Predict Helitrons and search for their 5'TC terminals in the upstream 20,000bp range.
 
@@ -92,6 +92,12 @@ perl EAHelitron_P –p 8 –o testEAHout –u 20000 teat.fas
 ---
 
 #### **Advanced options:** 
+**-r**: CTRRt 3' terminal fuzzy level:
+6 fuzzy levels of CTRRt terminal [0-5]
+
+```
+perl EAHelitron_P –p 8 -r 3 –o testEAHout_r3 teat.fas
+```
 Users can enter their own patterns (Perl RE) to predict Helitrons.
 (**Warning**: Advanced options may significantly increase the false positive rate, only for exploring).
 
@@ -99,7 +105,7 @@ Users can enter their own patterns (Perl RE) to predict Helitrons.
 **-H**: Use Hairpin left sequence RE pattern:
 
 Example:
-1. Only use GC as hairpin left sequence pattern:
+1. Only use a GC as hairpin left sequence pattern:
 ```
 perl EAHelitron_P –p 8 -H "GC" –o testEAHout_H_GC teat.fas
 ```
@@ -129,12 +135,7 @@ Or more complex:
 ```
 perl EAHeliton_P –p 8 -H "[GC]{1}[AT]{1}[GC]{5}|[GC]{6}" -T "TC|TCT.TACTA.T" –o testEAHout_T_H teat.fas
 ```
-**-r**: CTRRt 3' terminal fuzzy level:
-6 fuzzy levels of CTRRt terminal [0-5]
 
-```
-perl EAHelitron_P –p 8 -r 3 –o testEAHout_r3 teat.fas
-```
 ---
 
 ### Outputs:

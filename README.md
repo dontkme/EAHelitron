@@ -1,7 +1,7 @@
 # EAHelitron    
 <img src="https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png"  align="right" />
 
-[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.3-green.svg?style=flat)](https://github.com/dontkme/EAHelitron/releases) [![Last-changedate](https://img.shields.io/badge/last%20change-2021--06--25-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.4-green.svg?style=flat)](https://github.com/dontkme/EAHelitron/releases) [![Last-changedate](https://img.shields.io/badge/last%20change-2022--05--27-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
 
 
 Easy-to-Annotate Helitrons Unix-like Command-Line.              
@@ -159,23 +159,25 @@ The outputs are named like **EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 E
 
 ## History
 
-(EAHelitron)v1.5300 2021/06/25 Add a feature. User TC pattern and hairpin left sequence pattern options.
+(EAHelitron) v1.5400 2022/05/27 New default hairpin-left-sequence pattern (allow 2 [AT] in 5 [GC]). The default results for *A. thalina* increased from 665 to 708, and the false positive rate increased slightly from 5.91% to 6.47%.
 
-(EAHelitron)v1.5200 2020/09/25 Use a new regular expression, which is based on BioPerl, to get chromosome names, in order to adapt to more cases. Thanks to [Darcy Jones](https://github.com/darcyabjones)'s advice.
+(EAHelitron) v1.5300 2021/06/25 Add a feature. User TC pattern and hairpin left sequence pattern options.
 
-(EAHelitron)v1.5100 2019/06/10 Add a feature. Output a BED of 3’-ends.  (*.bed)
+(EAHelitron) v1.5200 2020/09/25 Use a new regular expression, which is based on BioPerl, to get chromosome names, in order to adapt to more cases. Thanks to [Darcy Jones](https://github.com/darcyabjones)'s advice.
 
-(EAHelitron)v1.5000 2019/03/08 Add a feature. Output a summary of genome sequences length, Helitron counts and Helitron Densities. (*.len.txt)
+(EAHelitron) v1.5100 2019/06/10 Add a feature. Output a BED of 3’-ends.  (*.bed)
 
-(EAHelitron)v1.4000 2018/08/31 Add CTAGT fuzzy level [0-5] option.
+(EAHelitron) v1.5000 2019/03/08 Add a feature. Output a summary of genome sequences length, Helitron counts and Helitron Densities. (*.len.txt)
 
-(EAHelitron)v1.3100 2017/09/19 Add snp switch.
+(EAHelitron) v1.4000 2018/08/31 Add CTAGT fuzzy level [0-5] option.
+
+(EAHelitron) v1.3100 2017/09/19 Add snp switch.
 
 (EAHelitron)v1.3000 2017/08/29 Add a feature for downstream sequences.
 
 ...
 
-(EAHelitron)v1.0000 2016/09/22 first version upload to GitHub.
+(EAHelitron) v1.0000 2016/09/22 first version upload to GitHub.
 
 ## Citation
 

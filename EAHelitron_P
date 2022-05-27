@@ -2,7 +2,7 @@
 
 #AUTHORS
 # Kaining Hu (c) 2021
-# Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5300 2021/06/25
+# Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5400 2024/05/27
 # hukaining@gmail.com
 
 use warnings;
@@ -21,7 +21,8 @@ our $upstreml=3000;
 our $downstreml=500;
 our $fuzzylv=0;
 our $finalCTAGT="ctagt";
-our $hairpinpattern="[gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5}";
+#our $hairpinpattern="[gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5}";
+our $hairpinpattern="[gc]{4}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{4}|[gc]{5}|[gc]{4}[at]{2}[gc]{1}|[gc]{3}[at]{2}[gc]{2}|[gc]{2}[at]{2}[gc]{3}|[gc]{1}[at]{2}[gc]{4}|[gc]{1}[at]{1}[gc]{1}[at]{1}[gc]{3}|[gc]{1}[at]{1}[gc]{2}[at]{1}[gc]{2}|[gc]{1}[at]{1}[gc]{3}[at]{1}[gc]{1}|[gc]{2}[at]{1}[gc]{1}[at]{1}[gc]{2}|[gc]{2}[at]{1}[gc]{2}[at]{1}[gc]{1}|[gc]{3}[at]{1}[gc]{1}[at]{1}[gc]{1}";
 our $TCpattern="TC(TCTACTA|T.TACTA.T|T.TACTAC|.{2}TACTACT|T.TAC.ACT|T.TA.TACT|T.TACT.CT|T.T.CTACT|.CTACTA.T|.{9}TATTAAG)";
 our @CTAGT=qw/
            CTAGT
@@ -53,7 +54,7 @@ or die("[-]Error in command line arguments
 	         4: CT[AG]{2}.{1}
 	         5: CTAG.{1}
 	         Default: 0]
-    Note: Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5300 2021/06/25.\n");
+    Note: Easy to Annotate Helitrons command line, Multi-Threading version(EAHelitron_P)v1.5400 2022/05/27.\n");
 
 if ($fuzzylv>5 or $fuzzylv<0) {
   die ("Please input fuzzy levle in int 0 to 5.\n");

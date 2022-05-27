@@ -159,7 +159,7 @@ The outputs are named like **EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 E
 
 ## History
 
-(EAHelitron) v1.5400 2022/05/27 New default hairpin-left-sequence pattern (allow 2 [AT] in 5 [GC]). The default results for *A. thalina* increased from 665 to 708, and the false positive rate increased slightly from 5.91% to 6.47%.
+(EAHelitron) v1.5400 2022/05/27 New default hairpin-left-sequence pattern (allow 2 [AT] in 5 [GC]). The default results for *A. thaliana* increased from 665 to 708, and the false positive rate increased slightly from 5.91% to 6.47%.
 
 (EAHelitron) v1.5300 2021/06/25 Add a feature. User TC pattern and hairpin left sequence pattern options.
 

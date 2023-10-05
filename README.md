@@ -94,6 +94,8 @@ perl EAHelitron_P –p 8 –o testEAHout –u 20000 teat.fas
 
 ##### **Advanced options:** 
 
+**Warning**: Advanced options may significantly increase the false positive rate, only for exploring!!!
+
   **-r**: CTRRt 3' terminal fuzzy level:
   6 fuzzy levels of CTRRt terminal [0-5]
 
@@ -101,17 +103,17 @@ perl EAHelitron_P –p 8 –o testEAHout –u 20000 teat.fas
 perl EAHelitron_P –p 8 -r 3 –o testEAHout_r3 teat.fas
 ```
 Users can enter their own patterns (Perl RE) to predict Helitrons.
-(**Warning**: Advanced options may significantly increase the false positive rate, only for exploring).
 
 
-    **-H**: Use Hairpin left sequence RE pattern:
+
+**-H**: Use Hairpin left sequence RE pattern:
 
 Example:
 1. Only use a GC as hairpin left sequence pattern:
 ```
 perl EAHelitron_P –p 8 -H "GC" –o testEAHout_H_GC teat.fas
 ```
-2. or Use 1 **GC**(G or C) 1 **AT**(A or T) and 5 **GC** or(**|**) 6 **GC** as haripin left sequence pattern:
+1. or Use 1 **GC**(G or C) 1 **AT**(A or T) and 5 **GC** or(**|**) 6 **GC** as haripin left sequence pattern:
 ```
 perl EAHeliton_P –p 8 -H "[GC]{1}[AT]{1}[GC]{5}|[GC]{6}" –o testEAHout_H_GC teat.fas
 ```
@@ -147,7 +149,6 @@ Please make sure *RNAfold* could be running in your environment. If the terminal
 ```
 RNAfold -V
 ```
-
 
 Example:
 

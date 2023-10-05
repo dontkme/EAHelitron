@@ -1,7 +1,7 @@
 # EAHelitron    
 <img src="https://github.com/dontkme/PersonalScripts/raw/master/helitron-mini-01.png"  align="right" />
 
-[![releaseVersion](https://img.shields.io/badge/release%20version-1.5.4-green.svg?style=flat)](https://github.com/dontkme/EAHelitron/releases) [![Last-changedate](https://img.shields.io/badge/last%20change-2022--05--27-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
+[![releaseVersion](https://img.shields.io/badge/release%20version-1.6.0-green.svg?style=flat)](https://github.com/dontkme/EAHelitron/releases) [![Last-changedate](https://img.shields.io/badge/last%20change-2023--10--05-green.svg)](https://github.com/dontkme/EAHelitron/commit) ![perlVersion](https://img.shields.io/badge/perl-%3E%3D5.10-blue.svg?sytle=flat)
 
 
 Easy-to-Annotate Helitrons Unix-like Command-Line.              
@@ -71,6 +71,7 @@ Or
          Advanced options:
          [-T string|TC pattern. User's 5'TC pattern]
          [-H string|Hairpin pattern. User's Hairpin left pattern]
+         [-E float|minimum free energy (MFE) threshold, default: -5]
          [-r int[0-5]|CTRRt 3' terminal fuzzy level;
                  0: CTAGT
                  1: CT[AG]GT
@@ -91,9 +92,10 @@ perl EAHelitron_P –p 8 –o testEAHout –u 20000 teat.fas
 
 ---
 
-#### **Advanced options:** 
-**-r**: CTRRt 3' terminal fuzzy level:
-6 fuzzy levels of CTRRt terminal [0-5]
+##### **Advanced options:** 
+
+  **-r**: CTRRt 3' terminal fuzzy level:
+  6 fuzzy levels of CTRRt terminal [0-5]
 
 ```
 perl EAHelitron_P –p 8 -r 3 –o testEAHout_r3 teat.fas
@@ -102,7 +104,7 @@ Users can enter their own patterns (Perl RE) to predict Helitrons.
 (**Warning**: Advanced options may significantly increase the false positive rate, only for exploring).
 
 
-**-H**: Use Hairpin left sequence RE pattern:
+    **-H**: Use Hairpin left sequence RE pattern:
 
 Example:
 1. Only use a GC as hairpin left sequence pattern:
@@ -135,6 +137,24 @@ Or more complex:
 ```
 perl EAHeliton_P –p 8 -H "[GC]{1}[AT]{1}[GC]{5}|[GC]{6}" -T "TC|TCT.TACTA.T" –o testEAHout_T_H teat.fas
 ```
+---
+
+**-E**: minimum free energy (MFE) threshold, default: -5 (Only avaliable for EAHelitronMFE).
+
+EAHlitronMFE version could using *RNAfold* to filter the haipin minimum free energy (MFE).
+
+Please make sure *RNAfold* could be running in your environment. If the terminal shows the RNAfold version information after you typing this command, you could run the EAHlitronMFE.
+```
+RNAfold -V
+```
+
+
+Example:
+
+Using two G or C as hairpin left sequence pattern and haipin need a MFE less than -5.5:
+```
+perl EAHelitronMFE -T "[GC]{2}" -E -5.5 –o testEAHout_GC_E_5 teat.fas
+```
 
 ---
 
@@ -158,6 +178,8 @@ The outputs are named like **EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 E
 ***.len.txt**: Summary of genome sequences length, Helitron counts, and Helitron Densities
 
 ## History
+
+(EAHelitronMFE) v1.6000 2023/10/05 New strategy, using RNAfold to calculate the minimus free energy (MFE) to filter the haipins. Test in *Arabidopsis thaliana* (TAIR10) genome, -T [GC]{2} -E -5 options get 7532 candidate *Helitrons*.
 
 (EAHelitron) v1.5400 2022/05/27 New default hairpin-left-sequence pattern (allow 2 [AT] in 5 [GC]). The default results for *A. thaliana* increased from 665 to 708, and the false positive rate increased slightly from 5.91% to 6.47%.
 

@@ -11,7 +11,7 @@ Easy-to-Annotate Helitrons Unix-like Command-Line.              
 
 EAHelitron is a Unix-like program that you can run it on all Perl 5.10+ supported machines, and write commands in your shell scripts or through pipes. Linux, Mac OS, and Windows tests passed.
 
-
+New `EAHelitronMFE` using [*RNAfold*](https://github.com/ViennaRNA/ViennaRNA) to calculate the minimus free energy (MFE) to filter the haipins structure.
 
 
 
@@ -143,9 +143,9 @@ perl EAHeliton_P –p 8 -H "[GC]{1}[AT]{1}[GC]{5}|[GC]{6}" -T "TC|TCT.TACTA.T" �
 
 **-E**: minimum free energy (MFE) threshold, default: -5 (Only avaliable for EAHelitronMFE).
 
-EAHlitronMFE version could using *RNAfold* to filter the haipin minimum free energy (MFE).
+EAHlitronMFE version could using [*RNAfold*](https://github.com/ViennaRNA/ViennaRNA) to filter the haipin minimum free energy (MFE).
 
-Please make sure *RNAfold* could be running in your environment. If the terminal shows the RNAfold version information after you typing this command, you could run the EAHlitronMFE.
+Please make sure [*RNAfold*](https://github.com/ViennaRNA/ViennaRNA) could be running in your environment. If the terminal shows the RNAfold version information after you typing this command, you could run the EAHlitronMFE.
 ```
 RNAfold -V
 ```
@@ -180,7 +180,7 @@ The outputs are named like **EAHout.3.txt EAHout.5.txt EAHout.5.fa EAHout.gff3 E
 
 ## History
 
-(EAHelitronMFE) v1.6000 2023/10/05 New strategy, using RNAfold to calculate the minimus free energy (MFE) to filter the haipins. Test in *Arabidopsis thaliana* (TAIR10) genome, -T [GC]{2} -E -5 options get 7532 candidate *Helitrons*.
+(EAHelitronMFE) v1.6000 2023/10/05 New strategy, using [*RNAfold*](https://github.com/ViennaRNA/ViennaRNA) to calculate the minimus free energy (MFE) to filter the haipins. Test in *Arabidopsis thaliana* (TAIR10) genome, -T [GC]{2} -E -5 options get 7532 candidate *Helitrons*.
 
 (EAHelitron) v1.5400 2022/05/27 New default hairpin-left-sequence pattern (allow 2 [AT] in 5 [GC]). The default results for *A. thaliana* increased from 665 to 708, and the false positive rate increased slightly from 5.91% to 6.47%.
 

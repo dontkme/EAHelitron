@@ -228,6 +228,8 @@ for (our $ni=0;$ni<$Chri;$ni++){
 		close TEMPHPMFE;
 		unlink "$tmp_hairpin_name.MFE.txt";
 
+		##### End of Calculate MFE
+
 		# say $tmpHPMFE;
 		# say $MFET;
 		if ($tmpHPMFE <= $MFET){ 
@@ -305,6 +307,7 @@ for (our $ni=0;$ni<$Chri;$ni++){
 
 		our $trHID ="tr$ChrID"."H$count2";
 		#say $trHID;
+
 		##### Calculate MFE
 		#say $HID;
 		my $tmp_hairpin_name = "cache.$timestamp.$opfn.$trHID.tmp$count2TMP";
@@ -334,6 +337,8 @@ for (our $ni=0;$ni<$Chri;$ni++){
 		}
 		close TEMPHPMFE;
 		unlink "$tmp_hairpin_name.MFE.txt";
+
+		##### End of Calculate MFE
 
 		# say $tmpHPMFE;
 		# say $MFET;
